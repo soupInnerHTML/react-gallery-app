@@ -1,0 +1,33 @@
+.container {
+    max-width: 1200px;
+    margin: auto;
+    width: 100%;
+}
+.w-100 {
+    width: 100%;
+}
+.d-none {
+    display: none !important;
+}
+.pos-a{
+    position: absolute !important;
+}
+.text-center {
+    text-align: center;
+}
+.default {
+    padding: 0 24px;
+}
+.fixIndent {
+    margin: -15px 0 0 0;
+}
+.back-top {
+    width: 50px !important;
+    height: 50px !important;
+    span {
+        display: block !important;
+    }
+}
+.ant-image-preview-operations {
+    justify-content: flex-end;
+}

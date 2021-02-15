@@ -1,0 +1,12 @@
+.auth__modal {
+    .ant-modal-content {
+        border-radius: 30px;
+    }
+}
+.auth__btns {
+    .ant-form-item-control-input-content {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+    }
+}

@@ -1,0 +1,14 @@
+.content {
+  margin-top: 64px;
+}
+.header-inner {
+  justify-content: space-between;
+}
+.header {
+  position: fixed;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

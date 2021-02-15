@@ -1,0 +1,52 @@
+.wrapper-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+    .gallery-item {
+        position: relative;
+        .gallery-item__preloader, .ant-image {
+            height: 100%;
+            width: 100%;
+            img {
+                height: 100%;
+            }
+        }
+    }
+}
+
+.ant-image-preview-img-wrapper:after{
+    content: 'загрузка';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+.gallery-item__panel {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    span {
+        cursor: pointer;
+        font-size: 20px;
+        color: #fff;
+    }
+}
+.like__liked {
+    color: #FF3347 !important;
+    &.anim {
+        animation: pulse 1.5s;
+    }
+}
+.like__default {
+    &.anim {
+        animation: shake 1.5s;
+    }
+    &.rejected {
+        animation: shake 1.5s;
+    }
+}
+.gallery__empty {
+    animation: shake 1.5s;
+}
