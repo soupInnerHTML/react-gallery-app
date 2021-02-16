@@ -11,7 +11,11 @@ class Auth {
     @observable isLoggedOut = false
     @observable isModalVisible = false
     @observable signMode = "in"
-    @observable sign = {
+    required = {
+        required: true,
+        message: "",
+    }
+    sign = {
         in: {
             fields: [{
                 label: "Email",
@@ -28,18 +32,39 @@ class Auth {
             fields: [{
                 label: "Email",
                 placeholder: "",
+                rules: [
+                    this.required,
+                    {
+                        pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                        message: "Email is incorrect",
+                    }
+                ],
             },
             {
                 label: "User name",
                 placeholder: "",
+                rules: [
+                    this.required
+                ],
             },
             {
                 label: "Password",
                 placeholder: "",
+                rules: [
+                    this.required,
+                    {
+                        min: 8,
+                        message: "Minimum length is 8 chars",
+                    }
+                ],
             },
             {
                 label: "Repeat password",
                 placeholder: "",
+                rules: [
+                    this.required
+                    
+                ],
             }],
             switchText: "Already have an account? Just sign in or",
         },

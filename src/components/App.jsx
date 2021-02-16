@@ -6,7 +6,7 @@ import { Link, useLocation } from "react-router-dom"
 import routes from "../store/routes";
 import Routes from "./Routes";
 import compose from "../utils/compose";
-import Auth from "./Auth";
+import Auth from "./Auth/Auth";
 import auth from "../store/auth";
 import feed from "../store/feed";
 

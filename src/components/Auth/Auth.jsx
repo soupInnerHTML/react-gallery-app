@@ -1,65 +1,25 @@
-import Text from "antd/lib/typography/Text";
 import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Input, Modal, Row, Typography } from "antd";
-import auth from "../store/auth";
+import { Col, Form, Input, Modal, Row, Typography } from "antd";
+import { gAuth, gSignIn } from "../../api/google";
 import { observer } from "mobx-react-lite";
 import { uniqueId } from "lodash";
 import { CloseCircleOutlined } from "@ant-design/icons";
-import { CustomGoogleIcon } from "./Common/CustomGoogleIcon";
+import signUp from "../../store/signUp";
+import { CustomGoogleIcon } from "../Common/CustomGoogleIcon";
+import CustomBtn from "../Common/CustomBtn";
+import CustomPlaceholder from "./CustomPlaceholder";
+import auth from "../../store/auth";
 
 export default observer(() => {
     const [form] = Form.useForm()
     const [isFetching, setFetching] = useState(false)
-    const [errors, setErrors] = useState({ email: "test", })
+    const [errors, setErrors] = useState({})
     const { formTemplate, changeSignMode, } = auth
 
-    const gError = () => {
-        console.error("some error with gapi")
-    }
 
-    //g(oogle)api is global scope var
-    const gSignIn = async () => {
-        try {
-            const GoogleAuth = gapi.auth2.getAuthInstance()
-            const user = await GoogleAuth.signIn({
-                scope: "profile email",
-            })
+    useEffect(gAuth, [])
 
-            const gUserData = {
-                email: user.getBasicProfile().getEmail(),
-                username: user.getBasicProfile().getName(),
-                avatar: user.getBasicProfile().getImageUrl(),
-                outer: true,
-            }
-
-            auth.login(gUserData)
-        }
-        catch (e) {
-            gError()
-            Modal.error({
-                title: "Error",
-                content: e.error.replace(/_/g, " "),
-            })
-        }
-    }
-
-    useEffect(() => {
-        try {
-            gapi.load("auth2", async () => {
-
-                await gapi.auth2.init({
-                    // eslint-disable-next-line camelcase
-                    client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-                })
-                console.log("init OK")
-            })
-        }
-        catch (e) {
-            gError()
-        }
-    }, [])
-
-    //TODO refactor
+    //TODO refactor login & register
     const login = async (values) => {
         try {
             setFetching(true)
@@ -115,8 +75,12 @@ export default observer(() => {
                     {
                         formTemplate.fields.map(field => (
                             <Col span={formTemplate.fields.length > 2 ? 11 : 13} key={uniqueId()}>
-                                <Text type="danger">{errors[field.label]}</Text>
-                                <Form.Item label={field.label} name={field.label.toLowerCase()}>
+
+                                <Form.Item
+                                    label={<CustomPlaceholder {...{ errors, }} label={field.label}/>}
+                                    name={field.label.toLowerCase()}
+                                    rules={field.rules}
+                                >
                                     <Input style={{ borderRadius: 40, }} size={"large"} placeholder={field.placeholder} />
                                 </Form.Item>
                             </Col>
@@ -133,8 +97,8 @@ export default observer(() => {
                     </Form.Item>
 
                     <Form.Item className={"auth__btns"}>
-                        <Button size={"large"} shape="round" type="primary" htmlType="submit" loading={isFetching}>Sign {auth.signMode}</Button>
-                        <Button size={"large"} shape="round" icon={<CustomGoogleIcon/>} onClick={gSignIn} disabled={isFetching}>Sign in with Google</Button>
+                        <CustomBtn type="primary" htmlType="submit" loading={isFetching}>Sign {auth.signMode}</CustomBtn>
+                        <CustomBtn icon={<CustomGoogleIcon/>} onClick={gSignIn} disabled={isFetching}>Sign in with Google</CustomBtn>
                     </Form.Item>
 
                 </div>
