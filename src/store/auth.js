@@ -11,19 +11,25 @@ class Auth {
     @observable isLoggedOut = false
     @observable isModalVisible = false
     @observable signMode = "in"
-    required = {
+    @observable required = {
         required: true,
         message: "",
     }
-    sign = {
+    @observable sign = {
         in: {
             fields: [{
                 label: "Email",
-                placeholder: "",
+                placeholder: "example@example.com",
+                rules: [
+                    this.required
+                ],
             },
             {
                 label: "Password",
-                placeholder: "",
+                placeholder: "••••••••",
+                rules: [
+                    this.required
+                ],
             }],
             switchText: "Doesn't have an account? Sign up or",
         },
@@ -31,7 +37,7 @@ class Auth {
         up: {
             fields: [{
                 label: "Email",
-                placeholder: "",
+                placeholder: "example@example.com",
                 rules: [
                     this.required,
                     {
@@ -42,28 +48,37 @@ class Auth {
             },
             {
                 label: "User name",
-                placeholder: "",
+                placeholder: "Elon Musk",
                 rules: [
                     this.required
                 ],
             },
             {
                 label: "Password",
-                placeholder: "",
+                placeholder: "••••••••",
                 rules: [
                     this.required,
                     {
                         min: 8,
-                        message: "Minimum length is 8 chars",
+                        message: "Minimum password length is 8 chars",
                     }
                 ],
             },
             {
                 label: "Repeat password",
-                placeholder: "",
+                placeholder: "••••••••",
+                dependencies: ["password"],
                 rules: [
-                    this.required
-                    
+                    this.required,
+                    ({ getFieldValue, }) => ({
+                        validator(_, value) {
+                            if (!value || getFieldValue("password") === value) {
+                                return Promise.resolve();
+                            }
+
+                            return Promise.reject("The two passwords that you entered do not match!");
+                        },
+                    })
                 ],
             }],
             switchText: "Already have an account? Just sign in or",
@@ -172,16 +187,29 @@ class Auth {
     }
 
     @action.bound async saveLike(photo) {
-        const { id, } = this.authState
-        const { url, bigV, } = photo
-        const _res = await firebase.put(`users/${id}.json`, {
+        const { url, bigV, id, } = photo
+
+        const _res = await firebase.put(`users/${this.authState.id}.json`, {
             ...this.authState,
-            liked: [...(this.authState.liked ?? []), {
+            liked: [{
                 url,
                 bigV,
                 liked: true,
-                id: +new Date + uniqueId(), //timestamp +
-            }],
+                id,
+            }, ...(this.authState.liked ?? []) ],
+        })
+
+        this.authState = _res.data
+        this.storageSync()
+    }
+
+    @action.bound async deleteLike(photoId) {
+        const { id, } = this.authState
+
+        this.authState.liked = this.authState.liked.map(like => like.id === photoId ? { ...like, liked: false, } : like)
+        const _res = await firebase.put(`users/${id}.json`, {
+            ...this.authState,
+            liked: (this.authState.liked ?? []).filter(like => like.id !== photoId),
         })
 
         this.authState = _res.data

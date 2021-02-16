@@ -6,8 +6,9 @@ export const gError = () => {
 }
 
 //g(oogle)api is global scope var
-export const gSignIn = async () => {
+export const gSignIn = async (fetcher) => {
     try {
+        fetcher(true)
         const GoogleAuth = gapi.auth2.getAuthInstance()
         const user = await GoogleAuth.signIn({
             scope: "profile email",
@@ -21,8 +22,10 @@ export const gSignIn = async () => {
         }
 
         auth.login(gUserData)
+        fetcher(false)
     }
     catch (e) {
+        fetcher(true)
         gError()
         Modal.error({
             title: "Error",

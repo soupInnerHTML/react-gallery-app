@@ -4,7 +4,7 @@ import { observer } from "mobx-react-lite";
 import cs from "classnames"
 import auth from "../../store/auth";
 
-export default observer(({ visible, isLiked, setLike, photo, }) => {
+export default observer(({ visible, isLiked, setLike, photo, id, }) => {
     const [isClicked, setClick] = useState(false)
     const [isRejected, setReject] = useState(false)
 
@@ -16,7 +16,7 @@ export default observer(({ visible, isLiked, setLike, photo, }) => {
         }
         setLike(flag)
 
-        flag ? auth.saveLike(photo) : () => {}
+        flag ? auth.saveLike(photo) : auth.deleteLike(id)
     }
 
     useEffect(() => {

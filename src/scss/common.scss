@@ -31,3 +31,9 @@
 .ant-image-preview-operations {
     justify-content: flex-end;
 }
+.ant-form-item-required::before {
+    content: '' !important;
+}
+.ant-form-item-explain-error {
+    text-align: center;
+}

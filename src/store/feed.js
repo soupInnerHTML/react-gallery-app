@@ -1,6 +1,7 @@
 import { action, computed, makeObservable, observable } from "mobx";
 import getRandInt from "../utils/getRandInt";
 import { uniqueId } from "lodash";
+import auth from "./auth";
 
 class Feed {
     @observable photos = []
@@ -42,12 +43,13 @@ class Feed {
             const base = "https://picsum.photos/id/" + getRandInt(500)
             const _w = imgWidth
             const _h = imgHeight
+            const _url = `${base}/${_w}/${_h}`
 
             return {
-                url: `${base}/${_w}/${_h}`,
+                url: _url,
                 bigV: `${base}/${_h + this.M_SHIFT}/${_h + this.M_SHIFT}`,
-                liked: false,
-                id: uniqueId(),
+                liked: !!auth.authState.liked.map(like => like.url).find(url => url === _url),
+                id: +new Date + uniqueId(),  //timestamp +
             }
         })
     }

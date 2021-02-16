@@ -10,10 +10,10 @@ export default observer((props) => {
         const event = ["scroll", feed.lazyLoad]
         window.addEventListener(...event)
 
-        // return () => {
-        //     window.removeEventListener(...event)
-        //     console.log("event was removed")
-        // }
+        return () => {
+            window.removeEventListener(...event)
+            console.log("event was removed")
+        }
     }, [])
 
     return (

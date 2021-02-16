@@ -47,6 +47,7 @@ export default observer(({ photo, }) => {
                 <Like
                     visible={isHover}
                     isLiked={photo.liked}
+                    id={photo.id}
                     setLike={feed.likePhoto.bind(0, photo.id)}
                     {...{ photo, }}
                 />
