@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import auth from "../../store/auth";
 import feed from "../../store/feed";
 import { Image, Skeleton, Space } from "antd";
-import { DownloadOutlined } from "@ant-design/icons";
+import { DownloadOutlined, RadiusSettingOutlined } from "@ant-design/icons";
 import { observer } from "mobx-react-lite";
 import Like from "./Like";
 import cs from "classnames"
@@ -38,6 +39,10 @@ export default observer(({ photo, }) => {
             />
 
             <Space className={"gallery-item__panel"} size={"large"}>
+                {!auth.authState?.outer && <a href={"#"} onClick={() => auth.editProfileInfo({ avatar: photo.url, })}>
+                    <RadiusSettingOutlined className={cs({ "d-none": !isHover, })} />
+                </a>}
+
                 <a href={photo.url} target={"_blank"}>
                     <DownloadOutlined
                         className={cs({ "d-none": !isHover, })}

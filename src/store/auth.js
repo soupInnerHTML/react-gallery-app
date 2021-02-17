@@ -1,3 +1,4 @@
+import { Modal } from "antd";
 import { action, computed, makeObservable, observable } from "mobx";
 import { firebase } from "../api/firebase";
 import bcrypt from "bcryptjs";
@@ -170,6 +171,52 @@ class Auth {
         this.logout()
     }
 
+    // @action.bound async setAvatarFromUrl(url) {
+    //     const { data, } = await firebase.patch(`users/${this.authState.id}.json`, { avatar: url, })
+    //     this.authState = { ...this.authState, ...data, }
+    //     this.storageSync()
+    // }
+
+    @action.bound async editProfileInfo(body) {
+        const { data, } = await firebase.patch(`users/${this.authState.id}.json`, body)
+        this.authState = { ...this.authState, ...data, }
+        this.storageSync()
+    }
+
+    @action.bound async updatePassword(body) {
+        const { password, oldPassword, } = body
+
+        // const hashedOldPassword = await bcrypt.hash(oldPassword, 12)
+        const isOldMatch = await bcrypt.compare(oldPassword, this.authState.password)
+
+        if (!isOldMatch) {
+            return Modal.error({
+                title: "Something wrong...",
+                content: "The old password does not match the entered one",
+            })
+        }
+
+        const isTheSame = await bcrypt.compare(password, this.authState.password)
+
+        if (isTheSame) {
+            return Modal.warning({
+                title: "Hmm...",
+                content: "The new password is the same as the old one",
+            })
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 12)
+
+        await firebase.patch(`users/${this.authState.id}.json`, {
+            password: hashedPassword,
+        })
+
+        return Modal.success({
+            title: "Yeah, right",
+            content: "The password successfully update",
+        })
+    }
+
     async addUser(body) {
         const hashedPassword = await bcrypt.hash(body.password, 12)
 
@@ -189,8 +236,7 @@ class Auth {
     @action.bound async saveLike(photo) {
         const { url, bigV, id, } = photo
 
-        const _res = await firebase.put(`users/${this.authState.id}.json`, {
-            ...this.authState,
+        const { data, } = await firebase.patch(`users/${this.authState.id}.json`, {
             liked: [{
                 url,
                 bigV,
@@ -199,14 +245,17 @@ class Auth {
             }, ...(this.authState.liked ?? []) ],
         })
 
-        this.authState = _res.data
+        this.authState = { ...this.authState, ...data, }
         this.storageSync()
     }
 
     @action.bound async deleteLike(photoId) {
         const { id, } = this.authState
 
-        this.authState.liked = this.authState.liked.map(like => like.id === photoId ? { ...like, liked: false, } : like)
+        this.authState.liked = this.authState.liked.map(like => like.id === photoId ? {
+            ...like,
+            liked: false,
+        } : like)
         const _res = await firebase.put(`users/${id}.json`, {
             ...this.authState,
             liked: (this.authState.liked ?? []).filter(like => like.id !== photoId),

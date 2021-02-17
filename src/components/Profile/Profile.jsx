@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { UserOutlined, HomeOutlined } from "@ant-design/icons";
-import { PageHeader, Avatar, Space, Tabs, Divider, Typography, Breadcrumb } from "antd";
+import { PageHeader, Avatar, Space, Tabs, Divider, Typography, Breadcrumb, Col, Row } from "antd";
 import { useHistory } from "react-router-dom";
 import routes from "../../store/routes";
 import Gallery from "../Gallery/Gallery";
@@ -9,11 +9,17 @@ import { observer } from "mobx-react-lite"
 import auth from "../../store/auth"
 
 const Profile = (props) => {
+    const [currentTab, setCurrentTab] = useState(1)
     const { TabPane, } = Tabs;
-
     const { Title, Text, } = Typography;
-
     const history = useHistory();
+
+    const { avatar, username, email, outer, } = auth.authState || {}
+
+    const animSwitch = currentTab == 2 ? "backOutDown" : "backInUp"
+    const maxAnimSwitch = typeof currentTab == "string" && !outer ? animSwitch : ""
+
+    useEffect(() => console.log(currentTab), [currentTab])
 
     
     return (
@@ -37,15 +43,19 @@ const Profile = (props) => {
                     </Breadcrumb.Item>
                 </Breadcrumb>
 
-                <Avatar size={120} style={{ backgroundColor: "#87d068", }} src={auth.authState?.avatar} icon={<UserOutlined />} />
+                <Avatar size={120} style={{ backgroundColor: "#87d068", }} src={avatar} icon={<UserOutlined />} />
 
-                <Title>{auth.authState?.username}</Title>
-                <Text type="secondary">{auth.authState?.email}</Text>
+                <Title className={maxAnimSwitch}>
+                    {username}
+                </Title>
+                <Text type="secondary" className={maxAnimSwitch}>
+                    {email}
+                </Text>
             </Space>
 
             <Divider />
 
-            <Tabs defaultActiveKey="2" centered>
+            <Tabs defaultActiveKey={currentTab} centered onTabClick={setCurrentTab}>
 
                 <TabPane tab="Your likes" key="1">
                     <Gallery mode={"liked"}/>
@@ -61,6 +71,3 @@ const Profile = (props) => {
 
 
 export default observer(Profile)
-
-
-//TODO функция создания аватара из картинки в ленте

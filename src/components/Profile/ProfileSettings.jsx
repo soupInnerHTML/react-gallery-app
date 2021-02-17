@@ -1,14 +1,13 @@
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
-import { Button, Col, Input, Modal, Row, Typography } from "antd"
+import { Button, Col, Collapse, Form, Input, Modal, Row, Typography } from "antd"
 import { observer } from "mobx-react-lite";
 import auth from "../../store/auth";
+import { input } from "../../utils/styles";
+import CustomBtn from "../Common/CustomBtn";
 
 export default observer(() => {
 
-    // const { TextArea, } = Input;
-
-    //auth.deleteProfile
     function confirm() {
         Modal.confirm({
             title: "Confirm",
@@ -22,35 +21,60 @@ export default observer(() => {
 
     const { Link, } = Typography;
 
-    const [isPassChanges, setPassChangesMode] = useState(false)
-
     return (
         <Row justify={"center"} style={{ textAlign: "center", }}>
             <Col span={8}>
-                <Input maxLength={24} />
-                <div style={{ margin: "24px 0", }} />
+                {auth.authState.outer ? <div style={{ marginTop: 40, fontSize: 30, }}><Link onClick={auth.logout} type={"danger"}>Exit</Link></div>
+                    :
+                    <Collapse expandIcon={() => <></>} ghost className={"profile-settings"} defaultActiveKey={1}>
+                        <Collapse.Panel header="Change profile info" key="1" className={"profile-settings__link"}>
+                            <Form layout={"vertical"} onFinish={auth.editProfileInfo}>
+                                <Form.Item name={"username"} initialValue={auth.authState?.username}>
+                                    <Input {...input} placeholder="New user name" />
+                                </Form.Item>
 
-                <Input maxLength={24} />
-                <div style={{ margin: "24px 0", }} />
+                                <Form.Item name={"email"} initialValue={auth.authState?.email} placeholder="New email">
+                                    <Input {...input}  placeholder="New email" />
+                                </Form.Item>
 
-                <Link onClick={() => setPassChangesMode(true)}>Change password</Link>
-                <div style={{ margin: "5px 0", }} />
-                <Link type="danger" onClick={confirm}>Delete profile</Link>
-                <div style={{ margin: "5px 0", }} />
-                <Link type="danger" onClick={auth.logout}>Exit</Link>
-                <div style={{ margin: "24px 0", }} />
+                                <CustomBtn type="primary" htmlType="submit">Edit</CustomBtn>
+                            </Form>
+                        </Collapse.Panel>
 
-                {isPassChanges && <>
-                    <Input.Password maxLength={42} />
-                    <div style={{ margin: "24px 0", }} />
+                        <Collapse.Panel header="Change password" key="2" className={"profile-settings__link"}>
+                            <Form layout={"vertical"} onFinish={auth.updatePassword}>
+                                <Form.Item
+                                    name={"oldPassword"}
+                                    initialValue={auth.authState?.username}
+                                    rules={[auth.required]}
+                                >
+                                    <Input.Password {...input} placeholder="Old password" />
+                                </Form.Item>
 
-                    <Input.Password maxLength={42} />
-                    <div style={{ margin: "24px 0", }} />
-                </>}
+                                <Form.Item
+                                    name={"password"}
+                                    initialValue={auth.authState?.username}
+                                    rules={auth.sign.up.fields[2].rules}
+                                >
+                                    <Input.Password {...input} placeholder="New password" />
+                                </Form.Item>
 
-                <Button type="primary" size={"large"}>
-                    Submit
-                </Button>
+                                <Form.Item
+                                    name={"repeatPassword"}
+                                    initialValue={auth.authState?.email}
+                                    rules={auth.sign.up.fields[3].rules}
+                                    dependencies={auth.sign.up.fields[3].dependencies}
+                                >
+                                    <Input.Password {...input}  placeholder="Repeat new password" />
+                                </Form.Item>
+
+                                <CustomBtn type="primary" htmlType="submit">Update</CustomBtn>
+                            </Form>
+                        </Collapse.Panel>
+
+                        <Link key="3" onClick={confirm}  className={"profile-settings__danger"}>Delete profile</Link>
+                        <Link key="4" onClick={auth.logout}  className={"profile-settings__danger"}>Exit</Link>
+                    </Collapse>}
             </Col>
         </Row>
     )

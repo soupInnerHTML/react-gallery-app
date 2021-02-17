@@ -4,13 +4,13 @@ import { gAuth, gSignIn } from "../../api/google";
 import { observer } from "mobx-react-lite";
 import { uniqueId } from "lodash";
 import { CloseCircleOutlined } from "@ant-design/icons";
+import { input } from "../../utils/styles";
 import { CustomGoogleIcon } from "../Common/CustomGoogleIcon";
 import CustomBtn from "../Common/CustomBtn";
 import CustomPlaceholder from "./CustomPlaceholder";
 import auth from "../../store/auth";
 
 export default observer(() => {
-    const [form] = Form.useForm()
     const [isFetching, setFetching] = useState(false)
     const [gProcessing, setGProcessing] = useState(false)
     const { formTemplate, changeSignMode, } = auth
@@ -68,19 +68,14 @@ export default observer(() => {
             onCancel={() => auth.openModal(false)}
             width={1000}
         >
-            <Form {...{ form, }} layout={"vertical"} onFinish={authProcessing}>
+            <Form layout={"vertical"} onFinish={authProcessing}>
 
                 <Row gutter={30} justify={"center"} wrap={true}>
                     {
                         formTemplate.fields.map(field => {
                             const inputProps = {
-                                style: {
-                                    borderRadius: 40,
-                                    padding: "7px 15px",
-                                },
-                                size: "large",
+                                ...input,
                                 placeholder: field.placeholder,
-                                maxLength: 64,
                             }
                             return (
                                 <Col span={formTemplate.fields.length > 2 ? 11 : 13} key={uniqueId()}>
@@ -105,7 +100,7 @@ export default observer(() => {
 
                 <div className="text-center">
                     <Form.Item>
-                        <Typography.Link onClick={changeSignMode.bind(0, 0)}>
+                        <Typography.Link onClick={changeSignMode.bind(0, 0)} disabled={gProcessing || isFetching}>
                             {formTemplate.switchText}
                         </Typography.Link>
                     </Form.Item>

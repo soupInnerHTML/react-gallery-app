@@ -48,7 +48,7 @@ class Feed {
             return {
                 url: _url,
                 bigV: `${base}/${_h + this.M_SHIFT}/${_h + this.M_SHIFT}`,
-                liked: !!auth.authState.liked.map(like => like.url).find(url => url === _url),
+                liked: !!(auth.authState?.liked || []).map(like => like.url).find(url => url === _url),
                 id: +new Date + uniqueId(),  //timestamp +
             }
         })
