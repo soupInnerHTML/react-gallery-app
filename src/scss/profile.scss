@@ -13,3 +13,11 @@
   display: block;
   padding: 5px 0;
 }
+.profile-edit-form {
+  input {
+    //&::placeholder {
+      animation: fadeIn .7s ease-in;
+    //}
+  }
+  //background: #F0F2F5;
+}

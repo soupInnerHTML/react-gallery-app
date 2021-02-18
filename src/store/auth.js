@@ -1,8 +1,9 @@
-import { Modal } from "antd";
-import { action, computed, makeObservable, observable } from "mobx";
+import { message, Modal } from "antd";
+import { action, computed, makeObservable, observable, runInAction } from "mobx";
 import { firebase } from "../api/firebase";
 import bcrypt from "bcryptjs";
 import { findKey, uniqueId } from "lodash";
+import { eparse } from "../utils/eparse";
 
 class Auth {
     // undefined = непоределенность
@@ -99,6 +100,10 @@ class Auth {
         }
     }
 
+    @action.bound async serverSync() {
+        const { data, } = await firebase.get(`users/${this.authState.id}.json`)
+        this.authState = data
+    }
     @action.bound openModal(flag = true ) {
         this.isModalVisible = flag
     }
@@ -171,11 +176,16 @@ class Auth {
         this.logout()
     }
 
-    // @action.bound async setAvatarFromUrl(url) {
-    //     const { data, } = await firebase.patch(`users/${this.authState.id}.json`, { avatar: url, })
-    //     this.authState = { ...this.authState, ...data, }
-    //     this.storageSync()
-    // }
+    @action.bound async addPhotoToBlackList(photo) {
+        try {
+            await firebase.post(`users/${this.authState.id}/blackList.json`, photo.idApi)
+            runInAction(() => photo.url = "")
+            message.success("The photo was successfully added to black list");
+        }
+        catch (e) {
+            message.error(eparse(e));
+        }
+    }
 
     @action.bound async editProfileInfo(body) {
         const { data, } = await firebase.patch(`users/${this.authState.id}.json`, body)
@@ -237,12 +247,14 @@ class Auth {
         const { url, bigV, id, } = photo
 
         const { data, } = await firebase.patch(`users/${this.authState.id}.json`, {
-            liked: [{
+            liked: [ {
                 url,
                 bigV,
                 liked: true,
                 id,
-            }, ...(this.authState.liked ?? []) ],
+            },
+            ...(this.authState.liked ?? [])
+            ],
         })
 
         this.authState = { ...this.authState, ...data, }
@@ -252,17 +264,19 @@ class Auth {
     @action.bound async deleteLike(photoId) {
         const { id, } = this.authState
 
-        this.authState.liked = this.authState.liked.map(like => like.id === photoId ? {
+        let index = -1
+
+        this.authState.liked = this.authState.liked.map((like, i) => like.id === photoId ? (index = i, {
             ...like,
             liked: false,
-        } : like)
-        const _res = await firebase.put(`users/${id}.json`, {
-            ...this.authState,
-            liked: (this.authState.liked ?? []).filter(like => like.id !== photoId),
-        })
+        }) : like)
 
-        this.authState = _res.data
-        this.storageSync()
+
+        const _res = await firebase.delete(`users/${id}/liked/${index}.json`)
+
+        // this.authState = _res.data
+        // this.storageSync()
+        await this.serverSync()
     }
 
     constructor() {

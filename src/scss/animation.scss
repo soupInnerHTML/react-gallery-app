@@ -67,54 +67,90 @@ $p: 1.5;
     transform: translateX(0);
   }
 }
-@keyframes backOutDown{
-  0%{
-    -webkit-transform:scale(1);
-    transform:scale(1);
-    opacity:1;
-    height: 46px;
+@mixin backOutDown($gradient, $postfix: "") {
+  @keyframes backOutDown#{$postfix}{
+    0%{
+      -webkit-transform:scale(1);
+      transform:scale(1);
+      opacity:1;
+      height: 46px;
+    }
+    20%{
+      -webkit-transform:translateY(0) scale(.7);
+      transform:translateY(0) scale(.7);
+      opacity:.7;
+      height: 25px;
+    }
+    90%{
+      -webkit-transform:translateY($gradient) scale(.7);
+      transform:translateY($gradient) scale(.7);
+      opacity:.7;
+      height: 0;
+    }
+    to {
+      -webkit-transform:translateY($gradient) scale(.7);
+      transform:translateY($gradient) scale(.7);
+      opacity: 0;
+      height: 0;
+    }
   }
-  20%{
-    -webkit-transform:translateY(0) scale(.7);
-    transform:translateY(0) scale(.7);
-    opacity:.7;
-    height: 25px;
+}
+
+$simple: 190px;
+$longer: 245px;
+@include backOutDown($simple);
+@include backOutDown($longer, 'Longer');
+
+@mixin backInUp($gradient, $postfix: "") {
+  @keyframes backInUp#{$postfix}{
+    0%{
+      -webkit-transform: scale(.7);
+      transform:translateY(1200px) scale(.7);
+      opacity:.7;
+      height: 0;
+    }
+    80%{
+      -webkit-transform: translateY(0) scale(.7);
+      transform: translateY(0) scale(.7);
+      opacity: .7;
+      height: 25px;
+    }
+    to{
+      -webkit-transform: scale(1);
+      transform:scale(1);
+      opacity:1;
+      height: 46px;
+    }
   }
-  to{
-    -webkit-transform:translateY(700px) scale(.7);
-    transform:translateY(700px) scale(.7);
-    opacity:.7;
-    display: none !important;
-    height: 0;
-  }
+}
+
+@include backInUp($simple);
+@include backInUp($longer, 'Longer');
+
+@mixin withAnim($anim, $time: 1s) {
+  animation: $anim $time;
+  animation-fill-mode: forwards;
+  display: block;
 }
 .backOutDown {
-  animation: backOutDown 1s;
-  animation-fill-mode: forwards;
-  display: block;
+  @include withAnim(backOutDown)
 }
-@keyframes backInUp{
+.backOutDownLonger {
+  @include withAnim(backOutDownLonger)
+}
+$t: 1.3s;
+.backInUp {
+  @include withAnim(backInUp, $t)
+}
+.backInUpLonger {
+  @include withAnim(backInUpLonger, $t)
+}
+
+@keyframes slide{
   0%{
-    -webkit-transform:translateY(1200px) scale(.7);
-    transform:translateY(1200px) scale(.7);
-    opacity:.7;
     height: 0;
   }
-  80%{
-    -webkit-transform: translateY(0) scale(.7);
-    transform: translateY(0) scale(.7);
-    opacity: .7;
-    height: 25px;
-  }
   to{
-    -webkit-transform: scale(1);
-    transform:scale(1);
-    opacity:1;
-    height: 46px;
+    height: 41px;
   }
-}
-.backInUp {
-  animation: backInUp 1s;
-  animation-fill-mode: forwards;
-  display: block;
 }

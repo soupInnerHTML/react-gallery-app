@@ -40,13 +40,24 @@ class Feed {
     generateRandomPhotos() {
         const { imgWidth, imgHeight, } = this
         return Array.from({ length: 12, }, x => {
-            const base = "https://picsum.photos/id/" + getRandInt(500)
+            const { blackList, } = auth.authState || { blackList: {}, }
+            const _id = getRandInt(500)
+
+            if (Object.values(blackList).some(x => x === _id)) {
+                return {
+                    url: "1",
+                    id: +new Date + uniqueId(),  //timestamp +
+                }
+            }
+
+            const base = "https://picsum.photos/id/" + _id
             const _w = imgWidth
             const _h = imgHeight
             const _url = `${base}/${_w}/${_h}`
 
             return {
                 url: _url,
+                idApi: _id,
                 bigV: `${base}/${_h + this.M_SHIFT}/${_h + this.M_SHIFT}`,
                 liked: !!(auth.authState?.liked || []).map(like => like.url).find(url => url === _url),
                 id: +new Date + uniqueId(),  //timestamp +

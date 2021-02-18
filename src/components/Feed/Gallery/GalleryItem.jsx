@@ -1,8 +1,9 @@
+import { runInAction } from "mobx";
 import React, { useState } from "react";
 import auth from "../../../store/auth";
 import feed from "../../../store/feed";
-import { Image, Skeleton, Space } from "antd";
-import { DownloadOutlined, RadiusSettingOutlined } from "@ant-design/icons";
+import { Image, Skeleton, Space, message } from "antd";
+import { CloseOutlined, DownloadOutlined, RadiusSettingOutlined } from "@ant-design/icons";
 import { observer } from "mobx-react-lite";
 import Like from "./Like";
 import cs from "classnames"
@@ -16,6 +17,17 @@ export default observer(({ photo, }) => {
 
     const [isError, setError] = useState(false)
     const [isHover, setHover] = useState(false)
+
+    // const _addPhotoToBlackList = async () => {
+    //     try {
+    //         await auth.addPhotoToBlackList(photo.idApi)
+    //         runInAction(() => photo.url = "")
+    //         message.success("The photo was successfully added to black list");
+    //     }
+    //     catch (e) {
+    //         message.error(String(e).replace("Error: ", ""));
+    //     }
+    // }
 
     if (isError) {
         return <></>
@@ -39,7 +51,14 @@ export default observer(({ photo, }) => {
             />
 
             <Space className={"gallery-item__panel"} size={"large"}>
-                {!auth.authState?.outer && <a href={"#"} onClick={() => auth.editProfileInfo({ avatar: photo.url, })}>
+
+                <a title={"ignore this photo"} onClick={() => auth.addPhotoToBlackList(photo)}>
+                    <CloseOutlined
+                        className={cs({ "d-none": !isHover, })}
+                    />
+                </a>
+
+                {!auth.authState?.outer && <a title={"make an avatar"} onClick={() => auth.editProfileInfo({ avatar: photo.url, })}>
                     <RadiusSettingOutlined className={cs({ "d-none": !isHover, })} />
                 </a>}
 

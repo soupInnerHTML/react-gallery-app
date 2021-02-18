@@ -4,6 +4,7 @@ import { gAuth, gSignIn } from "../../api/google";
 import { observer } from "mobx-react-lite";
 import { uniqueId } from "lodash";
 import { CloseCircleOutlined } from "@ant-design/icons";
+import { eparse } from "../../utils/eparse";
 import { input } from "../../utils/styles";
 import { CustomGoogleIcon } from "../Common/CustomGoogleIcon";
 import CustomBtn from "../Common/CustomBtn";
@@ -27,7 +28,7 @@ export default observer(() => {
             setFetching(false)
             Modal.error({
                 title: "Error",
-                content: e.toString().replace("Error: ", ""),
+                content: eparse(e),
             })
         }
     }

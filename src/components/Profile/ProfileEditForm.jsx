@@ -47,7 +47,7 @@ const ProfileEditForm = ({ mode, }) => {
     const { fields, onFinish, submitText, } = form[mode]
 
     return (
-        <Form layout={"vertical"} {...{ onFinish, }}>
+        <Form layout={"vertical"} {...{ onFinish, }} className={"profile-edit-form"}>
             {fields.map(field => (
                 <Form.Item {...field}>
                     {mode === "password" ?

@@ -3,7 +3,7 @@ import { UserOutlined, HomeOutlined } from "@ant-design/icons";
 import { PageHeader, Avatar, Space, Tabs, Divider, Typography, Breadcrumb, Col, Row } from "antd";
 import { useHistory } from "react-router-dom";
 import routes from "../../store/routes";
-import Gallery from "../Gallery/Gallery";
+import Gallery from "../Feed/Gallery/Gallery";
 import ProfileSettings from "./ProfileSettings";
 import { observer } from "mobx-react-lite"
 import auth from "../../store/auth"
@@ -48,7 +48,7 @@ const Profile = () => {
                 <Title className={maxAnimSwitch}>
                     {username}
                 </Title>
-                <Text type="secondary" className={maxAnimSwitch}>
+                <Text type="secondary" className={maxAnimSwitch + "Longer"}>
                     {email}
                 </Text>
             </Space>
