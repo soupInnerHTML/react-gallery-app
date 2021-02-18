@@ -1,6 +1,6 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import getRandInt from "../utils/getRandInt";
 import { uniqueId } from "lodash";
+import getRandInt from "../utils/getRandInt";
 import auth from "./auth";
 
 class Feed {

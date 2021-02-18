@@ -7,37 +7,20 @@ import { CloseCircleOutlined } from "@ant-design/icons";
 import { input } from "../../utils/styles";
 import { CustomGoogleIcon } from "../Common/CustomGoogleIcon";
 import CustomBtn from "../Common/CustomBtn";
-import CustomPlaceholder from "./CustomPlaceholder";
 import auth from "../../store/auth";
 
 export default observer(() => {
-    const [isFetching, setFetching] = useState(false)
-    const [gProcessing, setGProcessing] = useState(false)
     const { formTemplate, changeSignMode, } = auth
 
+    const [isFetching, setFetching] = useState(false)
+    const [gProcessing, setGProcessing] = useState(false)
 
     useEffect(gAuth, [])
 
-    //TODO refactor login & register
-    const login = async (values) => {
+    const authAction = async (values, action) => {
         try {
             setFetching(true)
-            await auth.login(values)
-            setFetching(false)
-        }
-        catch (e) {
-            setFetching(false)
-            Modal.error({
-                title: "Error",
-                content: e.toString().replace("Error: ", ""),
-            })
-        }
-    }
-
-    const register = async (values) => {
-        try {
-            setFetching(true)
-            await auth.addUser(values)
+            await auth[action](values)
             setFetching(false)
         }
         catch (e) {
@@ -50,13 +33,11 @@ export default observer(() => {
     }
 
     const authProcessing = values => {
-        // console.log(values)
         switch (auth.signMode){
-            case "in": return login(values)
-            case "up": return register(values)
+            case "in": return authAction(values, "login")
+            case "up": return authAction(values, "addUser")
         }
     }
-
 
     return (
         <Modal
@@ -81,7 +62,6 @@ export default observer(() => {
                                 <Col span={formTemplate.fields.length > 2 ? 11 : 13} key={uniqueId()}>
 
                                     <Form.Item
-                                    // label={<CustomPlaceholder {...{ errors, }} label={field.label}/>}
                                         name={field.label.toLowerCase()}
                                         {...field}
                                     >

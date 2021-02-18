@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import auth from "../../store/auth";
-import feed from "../../store/feed";
+import auth from "../../../store/auth";
+import feed from "../../../store/feed";
 import { Image, Skeleton, Space } from "antd";
 import { DownloadOutlined, RadiusSettingOutlined } from "@ant-design/icons";
 import { observer } from "mobx-react-lite";

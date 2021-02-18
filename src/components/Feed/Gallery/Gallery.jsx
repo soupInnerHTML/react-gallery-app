@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { Empty, Image } from "antd";
 import { observer } from "mobx-react-lite";
-import feed from "../../store/feed";
+import feed from "../../../store/feed";
 import GalleryItem from "./GalleryItem";
-import auth from "../../store/auth"
+import auth from "../../../store/auth"
 
 export default observer(({ mode, }) => {
 

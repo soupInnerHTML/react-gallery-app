@@ -8,7 +8,7 @@ import ProfileSettings from "./ProfileSettings";
 import { observer } from "mobx-react-lite"
 import auth from "../../store/auth"
 
-const Profile = (props) => {
+const Profile = () => {
     const [currentTab, setCurrentTab] = useState(1)
     const { TabPane, } = Tabs;
     const { Title, Text, } = Typography;

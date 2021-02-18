@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { observer } from "mobx-react-lite";
 import cs from "classnames"
-import auth from "../../store/auth";
+import auth from "../../../store/auth";
 
 export default observer(({ visible, isLiked, setLike, photo, id, }) => {
     const [isClicked, setClick] = useState(false)

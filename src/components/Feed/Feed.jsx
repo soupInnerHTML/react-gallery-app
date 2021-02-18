@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import feed from "../store/feed";
+import feed from "../../store/feed";
 import { observer } from "mobx-react-lite";
 import Gallery from "./Gallery/Gallery"
 
