@@ -1,4 +1,3 @@
-import { runInAction } from "mobx";
 import React, { useState } from "react";
 import auth from "../../../store/auth";
 import feed from "../../../store/feed";
@@ -17,17 +16,6 @@ export default observer(({ photo, }) => {
 
     const [isError, setError] = useState(false)
     const [isHover, setHover] = useState(false)
-
-    // const _addPhotoToBlackList = async () => {
-    //     try {
-    //         await auth.addPhotoToBlackList(photo.idApi)
-    //         runInAction(() => photo.url = "")
-    //         message.success("The photo was successfully added to black list");
-    //     }
-    //     catch (e) {
-    //         message.error(String(e).replace("Error: ", ""));
-    //     }
-    // }
 
     if (isError) {
         return <></>

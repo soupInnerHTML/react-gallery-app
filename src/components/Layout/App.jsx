@@ -4,7 +4,6 @@ import { BackTop, Button, Layout } from "antd";
 import { UpOutlined } from "@ant-design/icons";
 import AppFooter from "./AppFooter";
 import AppHeader from "./AppHeader";
-import compose from "../../utils/compose";
 import Routes from "../Routes";
 import Auth from "../Auth/Auth";
 import auth from "../../store/auth";
@@ -13,10 +12,12 @@ import feed from "../../store/feed";
 const App = () => {
 
     useEffect(() => {
-        auth.stateSync()
-        auth.fetchUsers()
-        feed.addPhotos()
-        console.log("fetched photos on start")
+        (async() => {
+            await auth.serverSync()
+            feed.addPhotos()
+            console.log("fetched photos on start")
+        })()
+
     }, [])
 
     return (
@@ -39,4 +40,4 @@ const App = () => {
     )
 }
 
-export default compose(observer)(App)
+export default observer(App)

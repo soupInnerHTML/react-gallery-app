@@ -1,9 +1,10 @@
 import { Form, Input } from "antd";
 import { observer } from "mobx-react-lite";
-import { input } from "../../utils/styles";
 import React from "react";
 import auth from "../../store/auth";
+import styles from "../../store/styles";
 import CustomBtn from "../Common/CustomBtn";
+import { input } from "../global/styles";
 
 const ProfileEditForm = ({ mode, }) => {
 

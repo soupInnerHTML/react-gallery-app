@@ -1,5 +1,5 @@
 .layout {
-  min-height: 100vh;
+  min-height: 100vh !important;
 }
 .content {
   margin-top: 64px;
@@ -14,4 +14,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.avatar__placeholder {
+  position: absolute;
+  top: 26%;
+  .ant-skeleton-avatar {
+    width: 32px !important;
+    height: 32px !important;
+  }
+}
+.avatar__placeholder120 {
+  position: absolute;
+  top: 0;
+  .ant-skeleton-avatar {
+    width: 120px !important;
+    height: 120px !important;
+  }
 }

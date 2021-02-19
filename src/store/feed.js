@@ -31,9 +31,9 @@ class Feed {
         }
     }
     @action.bound likePhoto(id, flag = true) {
-        this.photos = this.photos.map(photo => photo.id === id ? { ...photo, liked: flag, } : photo)
-
-
+        const _setLike = (arr) => arr.map(photo => photo.id === id ? { ...photo, liked: flag, } : photo)
+        auth.authState.liked = _setLike(auth.authState.liked)
+        this.photos = _setLike(this.photos)
     }
 
     //secondary functions

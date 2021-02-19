@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { UserOutlined, HomeOutlined } from "@ant-design/icons";
-import { PageHeader, Avatar, Space, Tabs, Divider, Typography, Breadcrumb, Col, Row } from "antd";
+import { PageHeader, Avatar, Space, Tabs, Divider, Typography, Breadcrumb } from "antd";
 import { useHistory } from "react-router-dom";
+import { observer } from "mobx-react-lite"
 import routes from "../../store/routes";
+import CustomAvatar from "../Common/CustomAvatar";
 import Gallery from "../Feed/Gallery/Gallery";
 import ProfileSettings from "./ProfileSettings";
-import { observer } from "mobx-react-lite"
 import auth from "../../store/auth"
 
 const Profile = () => {
@@ -19,7 +20,7 @@ const Profile = () => {
     const animSwitch = currentTab == 2 ? "backOutDown" : "backInUp"
     const maxAnimSwitch = typeof currentTab == "string" && !outer ? animSwitch : ""
 
-    useEffect(() => console.log(currentTab), [currentTab])
+    // useEffect(() => console.log(currentTab), [currentTab])
 
     
     return (
@@ -32,7 +33,7 @@ const Profile = () => {
             />
 
 
-            <Space className={"w-100"} direction={"vertical"} align={"center"}>
+            <Space className={"w-100"} direction={"vertical"} align={"center"} style={{ zIndex: 2, }}>
                 <Breadcrumb className={"profile__breadcrumb"}>
                     <Breadcrumb.Item href={routes.home}>
                         <HomeOutlined />
@@ -43,7 +44,8 @@ const Profile = () => {
                     </Breadcrumb.Item>
                 </Breadcrumb>
 
-                <Avatar size={120} style={{ backgroundColor: "#87d068", }} src={avatar} icon={<UserOutlined />} />
+                {/*<Avatar size={120} style={{ backgroundColor: "#87d068", }} src={avatar} icon={<UserOutlined />} />*/}
+                <CustomAvatar size={120}/>
 
                 <Title className={maxAnimSwitch}>
                     {username}

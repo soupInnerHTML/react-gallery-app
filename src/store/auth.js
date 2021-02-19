@@ -2,7 +2,8 @@ import { message, Modal } from "antd";
 import { action, computed, makeObservable, observable, runInAction } from "mobx";
 import { firebase } from "../api/firebase";
 import bcrypt from "bcryptjs";
-import { findKey, uniqueId } from "lodash";
+import { findKey, sample } from "lodash";
+import { colorList } from "../components/global/styles";
 import { eparse } from "../utils/eparse";
 
 class Auth {
@@ -10,6 +11,7 @@ class Auth {
     // null = нет авторизации
     // {...} = есть авторизация
     @observable authState = undefined
+    @observable isLoggedIn = !!localStorage.getItem("auth")
     @observable isLoggedOut = false
     @observable isModalVisible = false
     @observable signMode = "in"
@@ -101,8 +103,21 @@ class Auth {
     }
 
     @action.bound async serverSync() {
-        const { data, } = await firebase.get(`users/${this.authState.id}.json`)
-        this.authState = data
+        const userId = localStorage.getItem("auth")
+        if (userId) {
+            const { data, } = await firebase.get(`users/${userId}.json`)
+            this.authState = { ...data, liked: Object.entries(data.liked || {}).map(
+                entry => ({
+                    ...entry[1],
+                    name: entry[0],
+                })
+            ).reverse(), }
+
+            this.isLoggedIn = true
+        }
+        else {
+            this.authState = null
+        }
     }
     @action.bound openModal(flag = true ) {
         this.isModalVisible = flag
@@ -110,27 +125,22 @@ class Auth {
     @action.bound changeSignMode(select) {
         this.signMode = select || this.oppositeSignMode
     }
-    @action.bound stateSync() {
-        this.authState = JSON.parse(localStorage.getItem("auth"))
-    }
     @action.bound logout() {
         localStorage.removeItem("auth")
         this.isLoggedOut = true
-        this.stateSync()
+        this.authState = null
+        this.isLoggedIn = false
     }
 
     async fetchUsers() {
         const _res = await firebase.get("users.json")
         return _res
     }
-    storageSync() {
-        localStorage.setItem("auth", JSON.stringify(this.authState))
-    }
 
     @action.bound async login(authData, isOuterAuth) {
-        const _successAuth = (data) => {
-            this.authState = data
-            this.storageSync()
+        const _successAuth = (key) => {
+            localStorage.setItem("auth", key)
+            this.serverSync()
             this.openModal(false)
         }
 
@@ -151,7 +161,7 @@ class Auth {
                 let oUser = await firebase.post("users.json", authData)
                 key = oUser.data.name
             }
-            return _successAuth({ ...authData, id: key, })
+            return _successAuth(key)
         }
 
         if (!key) {
@@ -163,7 +173,7 @@ class Auth {
         const isMatch = await bcrypt.compare(authData.password, user.password)
 
         if (isMatch) {
-            _successAuth({ ...user, id: key, })
+            _successAuth(key)
 
             return user
         }
@@ -190,13 +200,11 @@ class Auth {
     @action.bound async editProfileInfo(body) {
         const { data, } = await firebase.patch(`users/${this.authState.id}.json`, body)
         this.authState = { ...this.authState, ...data, }
-        this.storageSync()
     }
 
     @action.bound async updatePassword(body) {
         const { password, oldPassword, } = body
 
-        // const hashedOldPassword = await bcrypt.hash(oldPassword, 12)
         const isOldMatch = await bcrypt.compare(oldPassword, this.authState.password)
 
         if (!isOldMatch) {
@@ -236,46 +244,34 @@ class Auth {
             email,
             username: body["user name"],
             password: hashedPassword,
+            color: sample(colorList),
         }
 
         const { data, } = await firebase.post("users.json", user)
         console.log("add user", data)
+        await firebase.patch(`users/${data.name}.json`, { id: data.name, })
         this.login(body)
     }
 
     @action.bound async saveLike(photo) {
         const { url, bigV, id, } = photo
 
-        const { data, } = await firebase.patch(`users/${this.authState.id}.json`, {
-            liked: [ {
-                url,
-                bigV,
-                liked: true,
-                id,
-            },
-            ...(this.authState.liked ?? [])
-            ],
+        const { data, } = await firebase.post(`users/${this.authState.id}/liked.json`, {
+            url,
+            bigV,
+            liked: true,
+            id,
         })
+        await this.serverSync()
 
-        this.authState = { ...this.authState, ...data, }
-        this.storageSync()
+        return data
     }
 
-    @action.bound async deleteLike(photoId) {
+    @action.bound async deleteLike(name) {
         const { id, } = this.authState
 
-        let index = -1
 
-        this.authState.liked = this.authState.liked.map((like, i) => like.id === photoId ? (index = i, {
-            ...like,
-            liked: false,
-        }) : like)
-
-
-        const _res = await firebase.delete(`users/${id}/liked/${index}.json`)
-
-        // this.authState = _res.data
-        // this.storageSync()
+        await firebase.delete(`users/${id}/liked/${name}.json`)
         await this.serverSync()
     }
 

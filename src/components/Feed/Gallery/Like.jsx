@@ -1,10 +1,12 @@
+import { runInAction } from "mobx";
 import React, { useState, useEffect } from "react";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { observer } from "mobx-react-lite";
 import cs from "classnames"
 import auth from "../../../store/auth";
+import feed from "../../../store/feed";
 
-export default observer(({ visible, isLiked, setLike, photo, id, }) => {
+export default observer(({ visible, isLiked, setLike, photo, id, name, }) => {
     const [isClicked, setClick] = useState(false)
     const [isRejected, setReject] = useState(false)
 
@@ -16,7 +18,11 @@ export default observer(({ visible, isLiked, setLike, photo, id, }) => {
         }
         setLike(flag)
 
-        flag ? auth.saveLike(photo) : auth.deleteLike(id)
+        flag ? (async () => {
+            const { name, } = await auth.saveLike(photo)
+            runInAction(() => feed.photos = feed.photos.map(_photo => _photo.id === id ? { ..._photo, name, } : _photo))
+            console.log(photo.name)
+        })() : auth.deleteLike(photo.name)
     }
 
     useEffect(() => {
@@ -42,5 +48,3 @@ export default observer(({ visible, isLiked, setLike, photo, id, }) => {
         </div>
     )
 })
-
-// TODO функция добавления фото в черный список

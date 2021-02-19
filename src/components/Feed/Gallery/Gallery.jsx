@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Empty, Image } from "antd";
 import { observer } from "mobx-react-lite";
 import feed from "../../../store/feed";
@@ -8,7 +8,7 @@ import auth from "../../../store/auth"
 export default observer(({ mode, }) => {
 
 
-    const _photos = mode ? auth.authState.liked : feed.photos
+    const _photos = mode ? auth.authState?.liked : feed.photos
 
     if (_photos?.length) {
         return (
@@ -18,7 +18,8 @@ export default observer(({ mode, }) => {
                         _photos.map(photo => (
                             <GalleryItem
                                 key={photo.id}
-                                {...{ photo, }} />
+                                {...{ photo, }}
+                            />
                         ))
                     }
                 </Image.PreviewGroup>
@@ -32,4 +33,4 @@ export default observer(({ mode, }) => {
 
 })
 
-//TODO функция скачивания картинок
+//TODO доделать: функция скачивания картинок
