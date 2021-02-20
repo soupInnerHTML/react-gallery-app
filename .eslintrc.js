@@ -12,11 +12,6 @@ module.exports = {
         sourceType: "module",
     },
     rules: {
-        // "react/prop-types": "warn",
-        // "react/jsx-curly-spacing": [2, {
-        //     "when": "always",
-        //     "children": true,
-        // }],
         "no-var": "error",
         "no-extra-semi": "error",
         "camelcase": "error",

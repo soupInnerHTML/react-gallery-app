@@ -10,8 +10,12 @@ const AppFooter = () => {
     return (
         <Layout.Footer className={"text-center"}>
             <Typography.Text type="secondary">
-                @ruby {START_YEAR}
+                <a href={"https://github.com/soupInnerHTML"} target={"_blank"} rel={"noopener noreferrer"}>@ruby</a> {START_YEAR}
                 {currentYear !== START_YEAR && ` — ${currentYear}`}
+            </Typography.Text>
+            <br/>
+            <Typography.Text type="secondary">
+                Images from <a href={"https://picsum.photos/"} target={"_blank"} rel={"noopener noreferrer"}>Picsum</a>
             </Typography.Text>
         </Layout.Footer>
     );

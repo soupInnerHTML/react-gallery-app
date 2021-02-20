@@ -13,8 +13,8 @@ const App = () => {
 
     useEffect(() => {
         (async() => {
-            await auth.serverSync()
-            feed.addPhotos()
+            feed.getList().then()
+            auth.serverSync().then()
             console.log("fetched photos on start")
         })()
 

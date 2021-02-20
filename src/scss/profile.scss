@@ -21,3 +21,15 @@
   }
   //background: #F0F2F5;
 }
+.username__placeholder {
+  height: 36px;
+  .ant-typography {
+    height: 20px !important;
+  }
+  .ant-skeleton-title {
+    height: 30px !important;
+  }
+}
+.email__placeholder {
+  height: 33px;
+}

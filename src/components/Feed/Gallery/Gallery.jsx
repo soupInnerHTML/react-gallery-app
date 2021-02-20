@@ -2,13 +2,13 @@ import React from "react";
 import { Empty, Image } from "antd";
 import { observer } from "mobx-react-lite";
 import feed from "../../../store/feed";
+import likes from "../../../store/likes";
 import GalleryItem from "./GalleryItem";
-import auth from "../../../store/auth"
 
 export default observer(({ mode, }) => {
 
 
-    const _photos = mode ? auth.authState?.liked : feed.photos
+    const _photos = mode ? likes.get() : feed.photos
 
     if (_photos?.length) {
         return (

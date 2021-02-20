@@ -7,7 +7,7 @@ import auth from "../../store/auth";
 import routes from "../../store/routes";
 import CustomAvatar from "../Common/CustomAvatar";
 import CustomBtn from "../Common/CustomBtn";
-import { colorList } from "../global/styles";
+import { colorList } from "../../global/styles";
 
 const AppHeader = () => {
 

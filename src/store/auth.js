@@ -1,16 +1,15 @@
-import { message, Modal } from "antd";
-import { action, computed, makeObservable, observable, runInAction } from "mobx";
+import { Modal } from "antd";
+import {action, computed, makeObservable, observable, runInAction} from "mobx";
 import { firebase } from "../api/firebase";
 import bcrypt from "bcryptjs";
 import { findKey, sample } from "lodash";
-import { colorList } from "../components/global/styles";
-import { eparse } from "../utils/eparse";
+import { colorList } from "../global/styles";
+import blackList from "./blackList";
+import feed from "./feed";
+import likes from "./likes";
 
 class Auth {
-    // undefined = непоределенность
-    // null = нет авторизации
-    // {...} = есть авторизация
-    @observable authState = undefined
+    @observable authState = null
     @observable isLoggedIn = !!localStorage.getItem("auth")
     @observable isLoggedOut = false
     @observable isModalVisible = false
@@ -106,14 +105,14 @@ class Auth {
         const userId = localStorage.getItem("auth")
         if (userId) {
             const { data, } = await firebase.get(`users/${userId}.json`)
-            this.authState = { ...data, liked: Object.entries(data.liked || {}).map(
-                entry => ({
-                    ...entry[1],
-                    name: entry[0],
-                })
-            ).reverse(), }
+            runInAction(() => this.authState = {
+                ...data,
+                id: userId,
+            })
+            likes.set().then()
+            blackList.set().then()
 
-            this.isLoggedIn = true
+            runInAction(() => this.isLoggedIn = true)
         }
         else {
             this.authState = null
@@ -130,6 +129,8 @@ class Auth {
         this.isLoggedOut = true
         this.authState = null
         this.isLoggedIn = false
+        runInAction(() => feed.photos = feed.photos.map(photo => ({ ...photo, liked: false, }) ))
+        // иначе остаются лайки после выхода
     }
 
     async fetchUsers() {
@@ -137,11 +138,16 @@ class Auth {
         return _res
     }
 
-    @action.bound async login(authData, isOuterAuth) {
-        const _successAuth = (key) => {
+    @action.bound async login(authData) {
+        const _successAuth = async (key) => {
             localStorage.setItem("auth", key)
-            this.serverSync()
+            await this.serverSync()
             this.openModal(false)
+            const { liked, } = this.authState
+            runInAction(() => feed.photos = feed.photos.map((photo) => ({
+                ...photo,
+                liked: liked.map(x => x.url).includes(photo.url),
+            }) ))
         }
 
         const _dataError = () => {
@@ -173,7 +179,7 @@ class Auth {
         const isMatch = await bcrypt.compare(authData.password, user.password)
 
         if (isMatch) {
-            _successAuth(key)
+            _successAuth(key).then()
 
             return user
         }
@@ -184,17 +190,6 @@ class Auth {
     @action.bound async deleteProfile() {
         await firebase.delete(`users/${this.authState.id}.json`)
         this.logout()
-    }
-
-    @action.bound async addPhotoToBlackList(photo) {
-        try {
-            await firebase.post(`users/${this.authState.id}/blackList.json`, photo.idApi)
-            runInAction(() => photo.url = "")
-            message.success("The photo was successfully added to black list");
-        }
-        catch (e) {
-            message.error(eparse(e));
-        }
     }
 
     @action.bound async editProfileInfo(body) {
@@ -249,30 +244,7 @@ class Auth {
 
         const { data, } = await firebase.post("users.json", user)
         console.log("add user", data)
-        await firebase.patch(`users/${data.name}.json`, { id: data.name, })
-        this.login(body)
-    }
-
-    @action.bound async saveLike(photo) {
-        const { url, bigV, id, } = photo
-
-        const { data, } = await firebase.post(`users/${this.authState.id}/liked.json`, {
-            url,
-            bigV,
-            liked: true,
-            id,
-        })
-        await this.serverSync()
-
-        return data
-    }
-
-    @action.bound async deleteLike(name) {
-        const { id, } = this.authState
-
-
-        await firebase.delete(`users/${id}/liked/${name}.json`)
-        await this.serverSync()
+        this.login(body).then()
     }
 
     constructor() {

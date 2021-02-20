@@ -42,7 +42,6 @@ export const gAuth = () => {
                 // eslint-disable-next-line camelcase
                 client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
             })
-            console.log("init OK")
         })
     }
     catch (e) {

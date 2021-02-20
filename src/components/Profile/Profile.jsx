@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { UserOutlined, HomeOutlined } from "@ant-design/icons";
-import { PageHeader, Avatar, Space, Tabs, Divider, Typography, Breadcrumb } from "antd";
+import { PageHeader, Avatar, Space, Tabs, Divider, Typography, Breadcrumb, Skeleton } from "antd";
 import { useHistory } from "react-router-dom";
 import { observer } from "mobx-react-lite"
 import routes from "../../store/routes";
@@ -48,10 +48,17 @@ const Profile = () => {
                 <CustomAvatar size={120}/>
 
                 <Title className={maxAnimSwitch}>
-                    {username}
+                    {username ||
+                    <div className="username__placeholder">
+                        <Skeleton title={{ width: 100, }} paragraph={{ rows: 0, }} active/>
+                    </div>}
+
                 </Title>
                 <Text type="secondary" className={maxAnimSwitch + "Longer"}>
-                    {email}
+                    {email ||
+                    <div className="email__placeholder">
+                        <Skeleton title={{ width: 150, }} paragraph={{ rows: 0, }} active/>
+                    </div>}
                 </Text>
             </Space>
 

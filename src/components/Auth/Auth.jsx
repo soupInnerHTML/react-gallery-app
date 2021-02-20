@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Col, Form, Input, Modal, Row, Typography } from "antd";
 import { gAuth, gSignIn } from "../../api/google";
 import { observer } from "mobx-react-lite";
-import styles from "../../store/styles";
 import { eparse } from "../../utils/eparse";
 import { uniqueId } from "lodash";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import { CustomGoogleIcon } from "../Common/CustomGoogleIcon";
 import CustomBtn from "../Common/CustomBtn";
 import auth from "../../store/auth";
-import { input } from "../global/styles";
+import { input } from "../../global/styles";
 
 export default observer(() => {
     const { formTemplate, changeSignMode, } = auth

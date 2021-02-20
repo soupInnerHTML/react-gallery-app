@@ -12,21 +12,28 @@ export default observer(() => {
     const { pathname, } = useLocation()
 
     useEffect(() => {
-        console.log(auth.authState)
-        if (pathname === routes.profile && auth.authState === null && !auth.isLoggedOut) {
+        // console.log(Object(auth.authState))
+        if (pathname === routes.profile && !auth.isLoggedIn && !auth.isLoggedOut) {
             auth.openModal()
-        }
-        if (auth.isLoggedOut) {
-            // runInAction(() => feed.photos = feed.photos.map(photo => ({ ...photo, liked: false, }) ))
-            runInAction(() => feed.photos = [] )
-            feed.addPhotos()
         }
     }, [JSON.stringify(auth.authState)])
 
     return (
         <Switch>
-            {auth.authState === null ? <Redirect from={routes.profile} to={routes.home}/> : <Route exact path={routes.profile} component={Profile} />}
-            <Route exact path={routes.feed} component={Feed} />
+            {
+                auth.isLoggedIn ?
+                    <Route exact path={routes.profile}>
+                        <Profile/>
+                    </Route>
+                    :
+                    <Redirect from={routes.profile} to={routes.home}/>
+            }
+
+            <Route exact path={routes.feed}>
+                <Feed/>
+            </Route>
+
+            <Redirect from={"*"} to={routes.home}/>
         </Switch>
     )
 })

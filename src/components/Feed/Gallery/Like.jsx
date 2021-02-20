@@ -1,28 +1,24 @@
-import { runInAction } from "mobx";
 import React, { useState, useEffect } from "react";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { observer } from "mobx-react-lite";
 import cs from "classnames"
 import auth from "../../../store/auth";
-import feed from "../../../store/feed";
+import likes from "../../../store/likes";
 
-export default observer(({ visible, isLiked, setLike, photo, id, name, }) => {
+export default observer(({ visible, photo, }) => {
     const [isClicked, setClick] = useState(false)
     const [isRejected, setReject] = useState(false)
 
+    let isLiked = photo.liked
+
     const like = (flag = true) => {
         setClick(true)
-        if (!auth.authState) {
+        if (!auth.isLoggedIn) {
             setTimeout(auth.openModal, 500)
             return setReject(true)
         }
-        setLike(flag)
 
-        flag ? (async () => {
-            const { name, } = await auth.saveLike(photo)
-            runInAction(() => feed.photos = feed.photos.map(_photo => _photo.id === id ? { ..._photo, name, } : _photo))
-            console.log(photo.name)
-        })() : auth.deleteLike(photo.name)
+        flag ? likes.saveLike(photo) : likes.deleteLike(photo)
     }
 
     useEffect(() => {
