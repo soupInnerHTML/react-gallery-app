@@ -1,4 +1,4 @@
-import {message, Modal} from "antd";
+import { message } from "antd";
 import { action, makeObservable, runInAction, observable } from "mobx";
 import { firebase } from "../api/firebase";
 import { eparse } from "../utils/eparse";
@@ -22,9 +22,6 @@ class BlackList {
 
     @action.bound async addPhoto(photo) {
         try {
-            if(!auth.isLoggedIn) {
-                return auth.openModal()
-            }
             await firebase.post(`blackLists/${auth.authState.id}.json`, photo.idApi)
             await likes.deleteLike(photo.name)
             runInAction(() => photo.url = "")
