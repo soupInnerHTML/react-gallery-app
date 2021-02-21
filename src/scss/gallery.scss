@@ -5,10 +5,10 @@
     margin-top: 20px;
     .gallery-item {
         position: relative;
-        .gallery-item__preloader, .ant-image {
+        &__preloader, .ant-image {
             height: 100%;
             width: 100%;
-            img {
+            span, img {
                 height: 100%;
             }
         }
@@ -24,7 +24,7 @@
     }
     &:after {
         z-index: 1;
-        content: 'загрузка';
+        content: 'Downloading...';
         color: #fff;
         font-size: 40px;
         display: flex;
@@ -47,20 +47,40 @@
         color: #fff;
     }
 }
-.like__liked {
-    color: #FF3347 !important;
-    &.anim {
-        animation: pulse 1.5s;
+.like {
+    &__liked {
+        color: #FF3347 !important;
+        &.anim {
+            animation: pulse 1.5s;
+        }
+    }
+    &__default {
+        &.anim {
+            animation: shake 1.5s;
+        }
+        &.rejected {
+            animation: shake 1.5s;
+        }
     }
 }
-.like__default {
-    &.anim {
-        animation: shake 1.5s;
+
+.gallery{
+    &__regenerate {
+        position: fixed !important;
+        bottom: 50px;
+        right: 90px;
+        width: 50px !important;
+        height: 50px !important;
+        z-index: 20;
+        transition: bottom 1s;
+        &.replaced {
+            bottom: 100px;
+        }
     }
-    &.rejected {
+    &__empty {
         animation: shake 1.5s;
     }
 }
-.gallery__empty {
-    animation: shake 1.5s;
+.darker {
+    filter: brightness(.5);
 }

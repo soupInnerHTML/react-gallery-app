@@ -28,7 +28,7 @@ const AppHeader = () => {
 
                 <Space align={"center"} size={"large"} className={"fadeIn"}>
                     {auth.isLoggedIn ? pathname !== routes.profile && <Link to={routes.profile}>
-                        <CustomAvatar/>
+                        <CustomAvatar isAvatarEditVisible={false} />
                     </Link> : auth.isModalVisible ? <></> : <>
                         <CustomBtn onClick={() => openModalWithMode("up")}>
                             Sign up

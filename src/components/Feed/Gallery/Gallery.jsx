@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite";
 import feed from "../../../store/feed";
 import likes from "../../../store/likes";
 import GalleryItem from "./GalleryItem";
+import RegenerateBtn from "./RegenerateBtn";
 
 export default observer(({ mode, }) => {
 
@@ -13,6 +14,7 @@ export default observer(({ mode, }) => {
     if (_photos?.length) {
         return (
             <div className="wrapper-gallery">
+                {!mode && <RegenerateBtn/>}
                 <Image.PreviewGroup>
                     {
                         _photos.map(photo => (

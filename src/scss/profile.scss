@@ -1,35 +1,55 @@
 .profile {
-  margin: 50px 0;
-}
-.profile__breadcrumb {
-  margin: 20px 0 10px 0;
-}
-.profile-settings__link .ant-collapse-header{
-  color: #1890ff !important;
-  padding: 5px 0 !important;
-}
-.profile-settings__danger{
-  color: rgb(255, 77, 79) !important;
-  display: block;
-  padding: 5px 0;
-}
-.profile-edit-form {
-  input {
-    //&::placeholder {
-      animation: fadeIn .7s ease-in;
-    //}
-  }
-  //background: #F0F2F5;
+    margin: 50px 0;
+    &-settings {
+        &__link .ant-collapse-header{
+            color: #1890ff !important;
+            padding: 5px 0 !important;
+        }
+        &__danger{
+            color: rgb(255, 77, 79) !important;
+            display: block;
+            padding: 5px 0;
+        }
+        &__avatar-edit{
+            z-index: 20;
+            position: absolute;
+            right: 0;
+            bottom: 15px;
+            input {
+                position: absolute;
+                opacity: 0;
+                height: 32px !important;
+                width: 32px !important;
+                z-index: 21;
+                &::-webkit-file-upload-button {
+                    cursor: pointer;
+                }
+            }
+            &.fadeOut {
+                cursor: auto;
+                pointer-events: none;
+            }
+        }
+    }
+
+    &-edit-form {
+        input {
+            &::placeholder {
+                animation: fadeIn .7s ease-in;
+            }
+        }
+        //background: #F0F2F5;
+    }
 }
 .username__placeholder {
-  height: 36px;
-  .ant-typography {
-    height: 20px !important;
-  }
-  .ant-skeleton-title {
-    height: 30px !important;
-  }
+    height: 36px;
+    .ant-typography {
+        height: 20px !important;
+    }
+    .ant-skeleton-title {
+        height: 30px !important;
+    }
 }
 .email__placeholder {
-  height: 33px;
+    height: 33px;
 }

@@ -18,9 +18,6 @@
 .default {
     padding: 0 24px;
 }
-.fixIndent {
-    margin: -15px 0 0 0;
-}
 .back-top {
     width: 50px !important;
     height: 50px !important;
@@ -31,9 +28,11 @@
 .ant-image-preview-operations {
     justify-content: flex-end;
 }
-.ant-form-item-required::before {
-    content: '' !important;
-}
-.ant-form-item-explain-error {
-    text-align: center;
+.ant-form-item-{
+    &required::before {
+        content: '' !important;
+    }
+    &explain-error {
+        text-align: center;
+    }
 }

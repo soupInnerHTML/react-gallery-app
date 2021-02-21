@@ -1,5 +1,5 @@
-import { Modal } from "antd";
-import {action, computed, makeObservable, observable, runInAction} from "mobx";
+import {message, Modal} from "antd";
+import {action, computed, makeObservable, observable} from "mobx";
 import { firebase } from "../api/firebase";
 import bcrypt from "bcryptjs";
 import { findKey, sample } from "lodash";
@@ -105,14 +105,14 @@ class Auth {
         const userId = localStorage.getItem("auth")
         if (userId) {
             const { data, } = await firebase.get(`users/${userId}.json`)
-            runInAction(() => this.authState = {
+            this.authState = {
                 ...data,
                 id: userId,
-            })
+            }
             likes.set().then()
             blackList.set().then()
 
-            runInAction(() => this.isLoggedIn = true)
+            this.isLoggedIn = true
         }
         else {
             this.authState = null
@@ -129,7 +129,7 @@ class Auth {
         this.isLoggedOut = true
         this.authState = null
         this.isLoggedIn = false
-        runInAction(() => feed.photos = feed.photos.map(photo => ({ ...photo, liked: false, }) ))
+        feed.photos = feed.photos.map(photo => ({ ...photo, liked: false, }) )
         // иначе остаются лайки после выхода
     }
 
@@ -144,10 +144,10 @@ class Auth {
             await this.serverSync()
             this.openModal(false)
             const { liked, } = this.authState
-            runInAction(() => feed.photos = feed.photos.map((photo) => ({
+            feed.photos = feed.photos.map((photo) => ({
                 ...photo,
                 liked: liked.map(x => x.url).includes(photo.url),
-            }) ))
+            }) )
         }
 
         const _dataError = () => {
@@ -192,9 +192,21 @@ class Auth {
         this.logout()
     }
 
-    @action.bound async editProfileInfo(body) {
+    @action.bound async editProfileInfo(body, _message) {
+        if(!this.isLoggedIn) {
+            return this.openModal()
+        }
         const { data, } = await firebase.patch(`users/${this.authState.id}.json`, body)
         this.authState = { ...this.authState, ...data, }
+
+        if(_message) {
+            return message.success(_message);
+        }
+
+        return Modal.success({
+            title: "It's alright",
+            content: "The profile info successfully update",
+        })
     }
 
     @action.bound async updatePassword(body) {

@@ -1,4 +1,4 @@
-import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { EditOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import React from "react";
 import { Col, Collapse, Modal, Row, Typography } from "antd"
 import { observer } from "mobx-react-lite";
@@ -18,34 +18,40 @@ export default observer(() => {
         })
     }
 
+
     const { Link, } = Typography;
 
     return (
-        <Row justify={"center"} style={{ textAlign: "center", }}>
-            <Col span={8}>
-                {auth.authState.outer ?
-                    <div style={{ marginTop: 40, fontSize: 30, }}>
-                        <Link onClick={auth.logout} type={"danger"}>Exit</Link>
-                    </div>
-                    :
-                    <Collapse expandIcon={() => <></>} ghost className={"profile-settings"} defaultActiveKey={1}>
-                        <Collapse.Panel header="Change profile info" key="1" className={"profile-settings__link"}>
-                            <ProfileEditForm mode={"data"} />
-                        </Collapse.Panel>
+        <>
+            <Row justify={"center"} style={{ textAlign: "center", }}>
+                <Col span={8}>
+                    {auth.authState.outer ?
+                        <div style={{ marginTop: 40, fontSize: 30, }}>
+                            <Link onClick={auth.logout} type={"danger"}>Exit</Link>
+                        </div>
+                        :
+                        <Collapse expandIcon={() => <></>} ghost className={"profile-settings"} defaultActiveKey={1}>
+                            <Collapse.Panel header="Change profile info" key="1" className={"profile-settings__link"}>
+                                <ProfileEditForm mode={"data"} />
+                            </Collapse.Panel>
 
-                        <Collapse.Panel header="Change password" key="2" className={"profile-settings__link"}>
-                            <ProfileEditForm mode={"password"} />
-                        </Collapse.Panel>
+                            <Collapse.Panel header="Change password" key="2" className={"profile-settings__link"}>
+                                <ProfileEditForm mode={"password"} />
+                            </Collapse.Panel>
 
-                        <Link key="3" onClick={confirm} className={"profile-settings__danger"}>
+                            <Link key="3" onClick={confirm} className={"profile-settings__danger"}>
                             Delete profile
-                        </Link>
-                        <Link key="4" onClick={auth.logout} className={"profile-settings__danger"}>
+                            </Link>
+                            <Link key="4" onClick={auth.logout} className={"profile-settings__danger"}>
                             Exit
-                        </Link>
+                            </Link>
 
-                    </Collapse>}
-            </Col>
-        </Row>
+                        </Collapse>}
+
+
+                </Col>
+            </Row>
+
+        </>
     )
 })

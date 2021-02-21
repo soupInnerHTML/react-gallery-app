@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { UserOutlined, HomeOutlined } from "@ant-design/icons";
-import { PageHeader, Avatar, Space, Tabs, Divider, Typography, Breadcrumb, Skeleton } from "antd";
+import { PageHeader, Space, Tabs, Divider, Typography, Breadcrumb, Skeleton } from "antd";
 import { useHistory } from "react-router-dom";
 import { observer } from "mobx-react-lite"
 import routes from "../../store/routes";
@@ -11,24 +11,21 @@ import auth from "../../store/auth"
 
 const Profile = () => {
     const [currentTab, setCurrentTab] = useState(1)
+    const [isAvatarEditVisible, setAvatarEditVisible] = useState(false)
     const { TabPane, } = Tabs;
     const { Title, Text, } = Typography;
     const history = useHistory();
 
-    const { avatar, username, email, outer, } = auth.authState || {}
+    const { username, email, outer, } = auth.authState || {}
 
     const animSwitch = currentTab == 2 ? "backOutDown" : "backInUp"
     const maxAnimSwitch = typeof currentTab == "string" && !outer ? animSwitch : ""
 
-    // useEffect(() => console.log(currentTab), [currentTab])
-
-    
     return (
         <div className={"profile"}>
             <PageHeader
                 className="site-page-header pos-a"
                 onBack={history.goBack}
-                // title="Profile"
                 subTitle="Назад"
             />
 
@@ -44,8 +41,7 @@ const Profile = () => {
                     </Breadcrumb.Item>
                 </Breadcrumb>
 
-                {/*<Avatar size={120} style={{ backgroundColor: "#87d068", }} src={avatar} icon={<UserOutlined />} />*/}
-                <CustomAvatar size={120}/>
+                <CustomAvatar size={120} {...{ currentTab, isAvatarEditVisible, }}/>
 
                 <Title className={maxAnimSwitch}>
                     {username ||
@@ -64,7 +60,12 @@ const Profile = () => {
 
             <Divider />
 
-            <Tabs defaultActiveKey={currentTab} centered onTabClick={setCurrentTab}>
+            <Tabs
+                centered
+                defaultActiveKey={currentTab}
+                onTabClick={setCurrentTab}
+                onChange={() => setAvatarEditVisible(true)}
+            >
 
                 <TabPane tab="Your likes" key="1">
                     <Gallery mode={"liked"}/>

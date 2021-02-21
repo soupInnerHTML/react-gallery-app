@@ -13,11 +13,13 @@ const ProfileEditForm = ({ mode, }) => {
                 name: "username",
                 initialValue: auth.authState?.username,
                 placeholder: "New user name",
+                rules: [auth.required],
             },
             {
                 name: "email",
                 initialValue: auth.authState?.email,
                 placeholder: "New email",
+                rules: auth.sign.up.fields[0].rules,
             }],
             onFinish: auth.editProfileInfo,
             submitText: "Edit",
