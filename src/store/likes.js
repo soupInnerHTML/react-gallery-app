@@ -1,7 +1,7 @@
 import { action, makeObservable, observable, runInAction } from "mobx";
-import { firebase } from "../api/firebase";
-import auth from "./auth";
+import { db } from "../api/firebase";
 import feed from "./feed";
+import user from "./user";
 
 class Likes {
 
@@ -11,8 +11,8 @@ class Likes {
         return this._likes
     }
 
-    @action.bound async set() {
-        const { data, } = await firebase.get(`likes/${auth.authState.id}.json`)
+    @action.bound async set(customId) {
+        const { data, } = await db.get(`likes/${customId || user.current.uid}.json`)
         this._likes = Object.entries(data || {}).map(
             entry => ({
                 ...entry[1],
@@ -26,7 +26,7 @@ class Likes {
         runInAction(() => photo.liked = true)
         const { url, bigV, id, idApi, } = photo
 
-        const { data, } = await firebase.post(`likes/${auth.authState.id}.json`, {
+        const { data, } = await db.post(`likes/${user.current.uid}.json`, {
             url,
             bigV,
             id,
@@ -43,11 +43,11 @@ class Likes {
         runInAction(() => {
             photo.liked = false
             //remove like from feed | cache
-            let feedPhoto = (feed.photos.length ? feed.photos : feed.cachedPhotos).find(_photo => _photo.id === photo.id)
-            feedPhoto.liked = false
+            let feedPhoto = (feed.photos.length ? feed.photos : feed.cachedPhotos).find(_photo => _photo.idApi === photo.idApi)
+            feedPhoto && (feedPhoto.liked = false)
         })
-        await firebase.delete(`likes/${auth.authState.id}/${photo.name}.json`)
-        this.set()
+        await db.delete(`likes/${user.current.uid}/${photo.name}.json`)
+        await this.set()
     }
 
     constructor() {

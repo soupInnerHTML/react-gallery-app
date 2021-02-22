@@ -1,14 +1,15 @@
-import { EditOutlined, UserOutlined } from "@ant-design/icons";
-import { Avatar, Button, Skeleton } from "antd";
-import { observer } from "mobx-react-lite";
 import React from "react";
-import firebase from "firebase";
 import auth from "../../store/auth";
+import user from "../../store/user";
 import cs from "classnames"
+import { observer } from "mobx-react-lite";
+import { EditOutlined, UserOutlined } from "@ant-design/icons";
+import { Avatar, Button, message, Skeleton } from "antd";
+import firebase from "firebase/app";
 
 const CustomAvatar = ({ size, currentTab, isAvatarEditVisible, }) => {
 
-    const { avatar, color, } = auth.authState || {}
+    const { photoURL, color, } = user.current || {}
     const [isFileLoading, setFileLoading] = React.useState(false)
 
     let selectAvatar = async e => {
@@ -19,10 +20,11 @@ const CustomAvatar = ({ size, currentTab, isAvatarEditVisible, }) => {
             let snapshot = await ref.put(file,  {
                 contentType: file.type,
             })
-            let avatar = await snapshot.ref.getDownloadURL()
-            await auth.editProfileInfo({ avatar, }, "Avatar successfully update")
+            let photoURL = await snapshot.ref.getDownloadURL()
+            await user.editProfileInfo({ photoURL, }, "", true)
+            setFileLoading(false)
+            message.success("The avatar has been successfully updated");
         }
-        setFileLoading(false)
     }
 
     return (
@@ -38,9 +40,9 @@ const CustomAvatar = ({ size, currentTab, isAvatarEditVisible, }) => {
 
             <Avatar
                 className="header__avatar"
-                style={{ backgroundColor: avatar ? "rgba(0,0,0,0)" : color || "rgba(0,0,0,0)", zIndex: 2, }}
+                style={{ backgroundColor: photoURL ? "rgba(0,0,0,0)" : color || "rgba(0,0,0,0)", zIndex: 2, }}
                 icon={color ? <UserOutlined /> : <></>}
-                src={avatar}
+                src={photoURL}
                 {...{ size, }}
             />
 

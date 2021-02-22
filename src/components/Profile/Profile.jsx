@@ -4,10 +4,10 @@ import { PageHeader, Space, Tabs, Divider, Typography, Breadcrumb, Skeleton } fr
 import { useHistory } from "react-router-dom";
 import { observer } from "mobx-react-lite"
 import routes from "../../store/routes";
+import user from "../../store/user";
 import CustomAvatar from "../Common/CustomAvatar";
 import Gallery from "../Feed/Gallery/Gallery";
 import ProfileSettings from "./ProfileSettings";
-import auth from "../../store/auth"
 
 const Profile = () => {
     const [currentTab, setCurrentTab] = useState(1)
@@ -16,7 +16,7 @@ const Profile = () => {
     const { Title, Text, } = Typography;
     const history = useHistory();
 
-    const { username, email, outer, } = auth.authState || {}
+    const { displayName, email, outer, } = user.current || {}
 
     const animSwitch = currentTab == 2 ? "backOutDown" : "backInUp"
     const maxAnimSwitch = typeof currentTab == "string" && !outer ? animSwitch : ""
@@ -44,7 +44,7 @@ const Profile = () => {
                 <CustomAvatar size={120} {...{ currentTab, isAvatarEditVisible, }}/>
 
                 <Title className={maxAnimSwitch}>
-                    {username ||
+                    {displayName ||
                     <div className="username__placeholder">
                         <Skeleton title={{ width: 100, }} paragraph={{ rows: 0, }} active/>
                     </div>}

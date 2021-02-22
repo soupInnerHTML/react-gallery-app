@@ -2,6 +2,7 @@ import { Form, Input } from "antd";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import auth from "../../store/auth";
+import user from "../../store/user";
 import CustomBtn from "../Common/CustomBtn";
 import { input } from "../../global/styles";
 
@@ -10,18 +11,18 @@ const ProfileEditForm = ({ mode, }) => {
     const form = {
         data: {
             fields: [{
-                name: "username",
-                initialValue: auth.authState?.username,
+                name: "displayName",
+                initialValue: user.current.displayName,
                 placeholder: "New user name",
                 rules: [auth.required],
             },
             {
                 name: "email",
-                initialValue: auth.authState?.email,
+                initialValue: user.current.email,
                 placeholder: "New email",
                 rules: auth.sign.up.fields[0].rules,
             }],
-            onFinish: auth.editProfileInfo,
+            onFinish: user.editProfileInfo,
             submitText: "Edit",
         },
         password: {
@@ -37,11 +38,11 @@ const ProfileEditForm = ({ mode, }) => {
             },
             {
                 name: "repeatPassword",
-                placeholder: "New password",
+                placeholder: "Repeat password",
                 rules: auth.sign.up.fields[3].rules,
                 dependencies: auth.sign.up.fields[3].dependencies,
             }],
-            onFinish: auth.updatePassword,
+            onFinish: user.updatePassword,
             submitText: "Update",
         },
     }

@@ -30,7 +30,7 @@ class Feed {
 
         if (windowHeight + scrollTop >= documentHeight - documentHeight / 4) {
             this.addPhotos()
-            console.log("fecthed photos on lazy load")
+            console.log("fetched photos on lazy load")
         }
     }
 

@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Col, Form, Input, Modal, Row, Typography } from "antd";
 import { gAuth, gSignIn } from "../../api/google";
 import { observer } from "mobx-react-lite";
-import { eparse } from "../../utils/eparse";
 import { uniqueId } from "lodash";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import { CustomGoogleIcon } from "../Common/CustomGoogleIcon";
+import { input } from "../../global/styles";
 import CustomBtn from "../Common/CustomBtn";
 import auth from "../../store/auth";
-import { input } from "../../global/styles";
 
 export default observer(() => {
     const { formTemplate, changeSignMode, } = auth
@@ -16,29 +15,9 @@ export default observer(() => {
     const [isFetching, setFetching] = useState(false)
     const [gProcessing, setGProcessing] = useState(false)
 
-    useEffect(gAuth, [])
-
-    const authAction = async (values, action) => {
-        try {
-            setFetching(true)
-            await auth[action](values)
-            setFetching(false)
-        }
-        catch (e) {
-            setFetching(false)
-            Modal.error({
-                title: "Error",
-                content: eparse(e),
-            })
-        }
-    }
-
-    const authProcessing = values => {
-        switch (auth.signMode){
-            case "in": return authAction(values, "login")
-            case "up": return authAction(values, "addUser")
-        }
-    }
+    useEffect(() => {
+        gAuth()
+    }, [])
 
     return (
         <Modal
@@ -50,7 +29,7 @@ export default observer(() => {
             onCancel={() => auth.openModal(false)}
             width={1000}
         >
-            <Form layout={"vertical"} onFinish={authProcessing}>
+            <Form layout={"vertical"} onFinish={(values) => auth.signProcessing(values, setFetching)}>
 
                 <Row gutter={30} justify={"center"} wrap={true}>
                     {

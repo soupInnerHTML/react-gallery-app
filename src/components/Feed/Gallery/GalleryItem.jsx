@@ -7,6 +7,7 @@ import { CloseOutlined, DownloadOutlined, ExclamationCircleOutlined, RadiusSetti
 import { observer } from "mobx-react-lite";
 import Like from "./Like";
 import cs from "classnames"
+import user from "../../../store/user"
 
 export default observer(({ photo, }) => {
 
@@ -19,7 +20,7 @@ export default observer(({ photo, }) => {
     const [isError, setError] = useState(false)
     const [isHover, setHover] = useState(false)
 
-    React.useEffect(() => console.log(isHover), [isHover])
+    // React.useEffect(() => console.log(isHover), [isHover])
 
     function confirm() {
         Modal.confirm({
@@ -27,7 +28,7 @@ export default observer(({ photo, }) => {
             icon: <ExclamationCircleOutlined/>,
             content: "Are you sure you want to update your avatar?",
             okText: "Submit",
-            onOk: () => auth.editProfileInfo({ avatar: photo.url, }),
+            onOk: () => user.editProfileInfo({ photoURL: photo.url, }, "The avatar has been successfully updated"),
             cancelText: "Cancel",
         })
     }

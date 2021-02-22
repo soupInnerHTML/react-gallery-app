@@ -3,6 +3,7 @@ import React from "react";
 import { Col, Collapse, Modal, Row, Typography } from "antd"
 import { observer } from "mobx-react-lite";
 import auth from "../../store/auth";
+import user from "../../store/user";
 import ProfileEditForm from "./ProfileEditForm";
 
 export default observer(() => {
@@ -13,7 +14,7 @@ export default observer(() => {
             icon: <ExclamationCircleOutlined/>,
             content: "Are you sure you want to delete your profile?",
             okText: "Submit",
-            onOk: auth.deleteProfile,
+            onOk: user.delete,
             cancelText: "Cancel",
         })
     }
@@ -25,7 +26,7 @@ export default observer(() => {
         <>
             <Row justify={"center"} style={{ textAlign: "center", }}>
                 <Col span={8}>
-                    {auth.authState.outer ?
+                    {user.current.outer ?
                         <div style={{ marginTop: 40, fontSize: 30, }}>
                             <Link onClick={auth.logout} type={"danger"}>Exit</Link>
                         </div>
