@@ -7,6 +7,8 @@ import auth from "./store/auth";
 import blackList from "./store/blackList";
 import feed from "./store/feed";
 import likes from "./store/likes";
+import _firebase from "./global/firebase";
+import user from "./store/user";
 
 
 export default () => {
@@ -14,9 +16,10 @@ export default () => {
     useEffect(() => {
         auth.check()
         feed.getList().then()
-        likes.set(localStorage.getItem("auth")).then()
         blackList.set(localStorage.getItem("auth")).then()
         console.log("fetched photos on start")
+
+        _firebase.db(`likes/${user.current.uid}`)
     }, [])
 
     return (

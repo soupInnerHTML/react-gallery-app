@@ -1,92 +1,20 @@
 import { Modal } from "antd";
 import { action, computed, makeObservable, observable } from "mobx";
+import { sign } from "../global/inputData";
 import { eparse } from "../utils/eparse";
-import firebase from "firebase";
 import feed from "./feed";
 import likes from "./likes";
 import localUser from "./user";
+import firebase from "../global/firebase";
 
 class Auth {
     @observable isLoggedIn = !!localStorage.getItem("auth")
     @observable isLoggedOut = false
     @observable isModalVisible = false
     @observable signMode = "in"
-    @observable required = {
-        required: true,
-        message: "",
-    }
-    @observable sign = {
-        in: {
-            fields: [{
-                label: "Email",
-                placeholder: "example@example.com",
-                rules: [
-                    this.required
-                ],
-            },
-            {
-                label: "Password",
-                placeholder: "••••••••",
-                rules: [
-                    this.required
-                ],
-            }],
-            switchText: "Doesn't have an account? Sign up or",
-        },
-
-        up: {
-            fields: [{
-                label: "Email",
-                placeholder: "example@example.com",
-                rules: [
-                    this.required,
-                    {
-                        pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                        message: "Email is incorrect",
-                    }
-                ],
-            },
-            {
-                label: "User name",
-                placeholder: "Elon Musk",
-                rules: [
-                    this.required
-                ],
-            },
-            {
-                label: "Password",
-                placeholder: "••••••••",
-                rules: [
-                    this.required,
-                    {
-                        min: 8,
-                        message: "Minimum password length is 8 chars",
-                    }
-                ],
-            },
-            {
-                label: "Repeat password",
-                placeholder: "••••••••",
-                dependencies: ["password"],
-                rules: [
-                    this.required,
-                    ({ getFieldValue, }) => ({
-                        validator(_, value) {
-                            if (!value || getFieldValue("password") === value) {
-                                return Promise.resolve();
-                            }
-
-                            return Promise.reject("The two passwords that you entered do not match!");
-                        },
-                    })
-                ],
-            }],
-            switchText: "Already have an account? Just sign in or",
-        },
-    }
 
     @computed get formTemplate() {
-        return this.sign[this.signMode]
+        return sign[this.signMode]
     }
     @computed get oppositeSignMode() {
         switch (this.signMode) {
@@ -105,7 +33,7 @@ class Auth {
         this.signMode = select || this.oppositeSignMode
     }
     @action.bound async logout() {
-        await firebase.auth().signOut()
+        await firebase.auth.signOut()
         console.log("sign out")
         localStorage.removeItem("auth")
         this.isLoggedOut = true
@@ -118,7 +46,7 @@ class Auth {
     check() {
         const { logout, isLoggedIn, } = this
         const storageId = localStorage.getItem("auth")
-        firebase.auth().onAuthStateChanged(function(_user) {
+        firebase.auth.onAuthStateChanged(function(_user) {
             if (!isLoggedIn) {
                 return
             }
@@ -159,7 +87,7 @@ class Auth {
 
     async signUp(body) {
         const { email, password, } = body
-        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password)
+        const userCredential = await firebase.auth.createUserWithEmailAndPassword(email, password)
         const { user, } = userCredential
         await user.updateProfile({
             displayName: body["user name"],
@@ -174,7 +102,7 @@ class Auth {
     }
 
     async signIn({ email, password, }) {
-        const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password)
+        const userCredential = await firebase.auth.signInWithEmailAndPassword(email, password)
         const { displayName, photoURL, uid, } = userCredential.user
         likes.set(uid).then()
         return  {

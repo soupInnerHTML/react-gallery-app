@@ -1,10 +1,10 @@
 import { message } from "antd";
 import { action, makeObservable, runInAction, observable, configure } from "mobx";
-import { db } from "../api/firebase";
 import { eparse } from "../utils/eparse";
 import auth from "./auth";
 import likes from "./likes";
 import user from "./user";
+import _firebase from "../global/firebase";
 
 configure({
     enforceActions: "never",
@@ -19,7 +19,7 @@ class BlackList {
     }
 
     @action.bound async set(customId) {
-        const { data, } = await db.get(`blackLists/${customId || user.current.uid}.json`)
+        const { data, } = await _firebase.db(`blackLists/${customId || user.current.uid}`)
         if (data) {
             this._blackList = Object.values(data)
         }
@@ -30,7 +30,7 @@ class BlackList {
             if (!auth.isLoggedIn) {
                 return auth.openModal()
             }
-            await db.post(`blackLists/${user.current.uid}.json`, photo.idApi)
+            await _firebase.db(`blackLists/${user.current.uid}/${photo.idApi + +new Date}`).set(photo.idApi)
             await likes.deleteLike(photo)
             runInAction(() => photo.url = "")
             message.success("The photo was successfully added to black list");

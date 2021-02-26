@@ -1,6 +1,6 @@
 import { action, makeObservable, observable } from "mobx";
 import { message, Modal } from "antd";
-import firebase from "firebase";
+import firebase from "firebase/app";
 import auth from "./auth"
 
 class User {
@@ -12,7 +12,7 @@ class User {
 
     @action.bound async delete() {
         await firebase.auth().currentUser.delete()
-        auth.logout()
+        await auth.logout()
     }
 
     @action.bound async editProfileInfo(body, _message, isCustomHandler) {

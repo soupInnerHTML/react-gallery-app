@@ -1,4 +1,3 @@
-import axios from "axios";
 import { action, computed, makeObservable, observable } from "mobx";
 import { sample, uniqueId } from "lodash";
 import getRandInt from "../utils/getRandInt";
@@ -36,8 +35,10 @@ class Feed {
 
     @action.bound async getList(from = 1, to = 10) {
         for (from; from <= to; from++) {
-            const { data, } = await axios.get(`https://picsum.photos/v2/list?page=${from}&limit=100`)
+            const response = await fetch(`https://picsum.photos/v2/list?page=${from}&limit=100`)
+            const data = await response.json()
             this.ids.push(...data.map(photo => photo.id))
+            console.log(this.ids)
         }
     }
 
@@ -53,27 +54,29 @@ class Feed {
         }
 
         return Array.from({ length: 12, }, x => {
-            let _id
+            let idApi
 
             if (this.ids.length) {
-                _id = sample(this.ids)
+                idApi = sample(this.ids)
             }
             else {
-                _id = getRandInt(500)
+                idApi = getRandInt(500)
             }
 
-            const base = "https://picsum.photos/id/" + _id
+            const base = "https://picsum.photos/id/" + idApi
             const _w = this.imgWidth
             const _h = this.imgHeight
             const url = `${base}/${_w}/${_h}`
+            const timestamp = +new Date
 
 
             return {
                 url,
-                idApi: _id,
+                timestamp,
+                idApi,
                 fromFeed: true,
                 bigV: `${base}/${_h + this.M_SHIFT}/${_h + this.M_SHIFT}`,
-                id: +new Date + uniqueId(),  //timestamp +
+                id: timestamp + uniqueId(),  //timestamp +
             }
         })
     }

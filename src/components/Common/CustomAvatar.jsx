@@ -1,11 +1,10 @@
 import React from "react";
-import auth from "../../store/auth";
 import user from "../../store/user";
 import cs from "classnames"
 import { observer } from "mobx-react-lite";
 import { EditOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Button, message, Skeleton } from "antd";
-import firebase from "firebase/app";
+import firebase from "../../global/firebase";
 
 const CustomAvatar = ({ size, currentTab, isAvatarEditVisible, }) => {
 
@@ -16,11 +15,12 @@ const CustomAvatar = ({ size, currentTab, isAvatarEditVisible, }) => {
         setFileLoading(true)
         let file = e.target.files[0]
         if (file) {
-            let ref = firebase.storage().ref("images/" + file.name)
+            let ref = firebase.storage(file.name)
             let snapshot = await ref.put(file,  {
                 contentType: file.type,
             })
             let photoURL = await snapshot.ref.getDownloadURL()
+            console.log(photoURL)
             await user.editProfileInfo({ photoURL, }, "", true)
             setFileLoading(false)
             message.success("The avatar has been successfully updated");

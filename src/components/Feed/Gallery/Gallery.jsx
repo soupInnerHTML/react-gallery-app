@@ -1,5 +1,5 @@
 import React from "react";
-import { Empty, Image } from "antd";
+import { Empty, Image, Row, Spin } from "antd";
 import { observer } from "mobx-react-lite";
 import feed from "../../../store/feed";
 import likes from "../../../store/likes";
@@ -11,7 +11,13 @@ export default observer(({ mode, }) => {
 
     const _photos = mode ? likes.get() : feed.photos
 
-    if (_photos?.length) {
+    if (!likes.isLoaded && mode) {
+        return <Row  align={"center"}>
+            <Spin size="large" />
+        </Row>
+    }
+
+    if (_photos.length) {
         return (
             <div className="wrapper-gallery">
                 {!mode && <RegenerateBtn/>}

@@ -1,42 +1,40 @@
 import { action, makeObservable, observable, runInAction } from "mobx";
-import { db } from "../api/firebase";
 import feed from "./feed";
 import user from "./user";
+import _firebase from "../global/firebase";
 
 class Likes {
 
     @observable _likes = []
+    @observable isLoaded = false
 
     get = () =>  {
         return this._likes
     }
 
-    @action.bound async set(customId) {
-        const { data, } = await db.get(`likes/${customId || user.current.uid}.json`)
+    @action.bound async set(data) {
         this._likes = Object.entries(data || {}).map(
             entry => ({
                 ...entry[1],
                 liked: true,
-                name: entry[0],
+                id: entry[0],
             })
         ).reverse()
+
+        this.isLoaded = true
     }
 
     @action.bound async saveLike(photo) {
         runInAction(() => photo.liked = true)
         const { url, bigV, id, idApi, } = photo
 
-        const { data, } = await db.post(`likes/${user.current.uid}.json`, {
+
+        await _firebase.db(`likes/${user.current.uid}/${id}`).set({
             url,
             bigV,
-            id,
             idApi,
         })
-        await this.set()
-        const { name, } = data
-        runInAction(() => {
-            feed.photos = feed.photos.map(_photo => _photo.id === id ? { ..._photo, name, } : _photo)
-        })
+
     }
 
     @action.bound async deleteLike(photo) {
@@ -46,8 +44,7 @@ class Likes {
             let feedPhoto = (feed.photos.length ? feed.photos : feed.cachedPhotos).find(_photo => _photo.idApi === photo.idApi)
             feedPhoto && (feedPhoto.liked = false)
         })
-        await db.delete(`likes/${user.current.uid}/${photo.name}.json`)
-        await this.set()
+        await _firebase.db(`likes/${user.current.uid}/${photo.id}`).remove()
     }
 
     constructor() {
