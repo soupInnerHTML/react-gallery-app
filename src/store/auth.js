@@ -1,9 +1,10 @@
 import { Modal } from "antd";
+import { sample } from "lodash";
 import { action, computed, makeObservable, observable } from "mobx";
 import { sign } from "../global/inputData";
+import { colorList } from "../global/styles";
 import { eparse } from "../utils/eparse";
 import feed from "./feed";
-import likes from "./likes";
 import localUser from "./user";
 import firebase from "../global/firebase";
 
@@ -70,6 +71,7 @@ class Auth {
         try {
             setFetching(true)
             const user = await this["sign" + this.signMode[0].toUpperCase() + this.signMode[1]](values)
+            console.log(user)
             localUser.set(user)
             localStorage.setItem("auth", user.uid)
             setFetching(false)
@@ -91,20 +93,15 @@ class Auth {
         const { user, } = userCredential
         await user.updateProfile({
             displayName: body["user name"],
+            photoURL: sample(colorList),
         })
-        const { displayName, uid, } = user
-        return {
-            email,
-            displayName,
-            uid,
-            _password: password,
-        }
+
+        return await this.signIn(body)
     }
 
     async signIn({ email, password, }) {
         const userCredential = await firebase.auth.signInWithEmailAndPassword(email, password)
         const { displayName, photoURL, uid, } = userCredential.user
-        likes.set(uid).then()
         return  {
             email,
             displayName,

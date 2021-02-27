@@ -1,4 +1,5 @@
 import React from "react";
+import { colorList } from "../../global/styles";
 import user from "../../store/user";
 import cs from "classnames"
 import { observer } from "mobx-react-lite";
@@ -8,8 +9,10 @@ import firebase from "../../global/firebase";
 
 const CustomAvatar = ({ size, currentTab, isAvatarEditVisible, }) => {
 
-    const { photoURL, color, } = user.current || {}
+    const { photoURL, } = user.current || {}
     const [isFileLoading, setFileLoading] = React.useState(false)
+
+    React.useEffect(() => console.log(photoURL), [photoURL])
 
     let selectAvatar = async e => {
         setFileLoading(true)
@@ -40,16 +43,16 @@ const CustomAvatar = ({ size, currentTab, isAvatarEditVisible, }) => {
 
             <Avatar
                 className="header__avatar"
-                style={{ backgroundColor: photoURL ? "rgba(0,0,0,0)" : color || "rgba(0,0,0,0)", zIndex: 2, }}
-                icon={color ? <UserOutlined /> : <></>}
+                style={{ backgroundColor: colorList.includes(photoURL) ? photoURL || "rgba(0,0,0,0)" : "rgba(0,0,0,0)", zIndex: 2, }}
+                icon={colorList.includes(photoURL) ? <UserOutlined /> : <></>}
                 src={photoURL}
                 {...{ size, }}
             />
 
             <Skeleton avatar active className={"avatar__placeholder" + (size ? size : "")}/>
         </div>
-    );
-};
+    )
+}
 
 
 export default observer(CustomAvatar)

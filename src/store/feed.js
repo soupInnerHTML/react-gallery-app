@@ -38,7 +38,6 @@ class Feed {
             const response = await fetch(`https://picsum.photos/v2/list?page=${from}&limit=100`)
             const data = await response.json()
             this.ids.push(...data.map(photo => photo.id))
-            console.log(this.ids)
         }
     }
 

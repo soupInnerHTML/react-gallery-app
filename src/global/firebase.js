@@ -7,8 +7,9 @@ class Firebase {
     db(path) {
         return firebase.database().ref(path)
     }
+    _auth = firebase.auth
     get auth() {
-        return firebase.auth()
+        return this._auth()
     }
     storage(img) {
         return firebase.storage().ref("images/" + img)
