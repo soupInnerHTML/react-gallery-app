@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import auth from "../../../store/auth";
 import blackList from "../../../store/blackList";
 import feed from "../../../store/feed";
 import { Image, Skeleton, Space, Modal, Tooltip } from "antd";
@@ -20,7 +19,7 @@ export default observer(({ photo, }) => {
     const [isError, setError] = useState(false)
     const [isHover, setHover] = useState(false)
 
-    // React.useEffect(() => console.log(isHover), [isHover])
+    // React.useEffect(() => () => console.log("unmount"), [])
 
     function confirm() {
         Modal.confirm({
@@ -37,46 +36,45 @@ export default observer(({ photo, }) => {
         return <></>
     }
 
-    function uiBanned() {
-        setHover(false)
-        setHover(true)
-        blackList.addPhoto(photo).then()
-    }
-
     return (
         <div
             className='gallery-item'
             style={fixedScales}
-            onMouseEnter={() => setHover(true)}
+            onMouseOver={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
         >
             <Image
                 onError={() => setError(true)}
                 src={photo.url}
-                // preview={{
-                //     src: photo.bigV,
-                // }}
+                preview={{
+                    src: photo.bigV,
+                }}
                 placeholder={<Skeleton.Input active={true} className="gallery-item__preloader" />}
                 className={cs({ darker: isHover, })}
                 style={{ transition: "filter .8s", }}
                 alt=""
             />
 
+            {/*preload*/}
+            <img style={{ display: "none", }} src={photo.bigV} alt=""/>
+
             <Space className={"gallery-item__panel"} size={"large"}>
 
-                <Tooltip title={"ignore this photo"} onClick={uiBanned}>
+                <Tooltip title={"ignore this photo"} onClick={() => blackList.addPhoto(photo)}>
                     <CloseOutlined
-                        className={cs({ "d-none": !isHover, })}
+                        className={isHover ? "fadeIn_" : "fadeOut_"}
                     />
                 </Tooltip>
 
-                {!auth.authState?.outer && <Tooltip title={"make an avatar"} onClick={confirm}>
-                    <RadiusSettingOutlined className={cs({ "d-none": !isHover, })} />
+                {!user.current.outer && <Tooltip title={"make an avatar"} onClick={confirm}>
+                    <RadiusSettingOutlined
+                        className={isHover ? "fadeIn_" : "fadeOut_"}
+                    />
                 </Tooltip>}
 
                 <a href={photo.url} target={"_blank"}>
                     <DownloadOutlined
-                        className={cs({ "d-none": !isHover, })}
+                        className={isHover ? "fadeIn_" : "fadeOut_"}
                     />
                 </a>
 

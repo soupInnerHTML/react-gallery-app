@@ -17,9 +17,14 @@ class User {
 
     @action.bound async editProfileInfo(body, _message, isCustomHandler) {
         const { currentUser, } = firebase.auth
-        const { displayName, email, } = body
+        const { displayName, email, photoURL, } = body
         let matchesCounter = 0
         console.log(this.current._password)
+
+        if (photoURL) {
+            await currentUser.updateProfile({ photoURL, })
+            return this.set(currentUser)
+        }
 
         if (displayName !== this.current.displayName) {
             await currentUser.updateProfile({ displayName, })
@@ -29,11 +34,11 @@ class User {
         }
 
         if (email !==  this.current.email) {
-            let credential = firebase._auth.EmailAuthProvider.credential(
-                this.current.email,
-                this.current._password
-            )
-            await currentUser.reauthenticateWithCredential(credential)
+            // let credential = firebase._auth.EmailAuthProvider.credential(
+            //     this.current.email,
+            //     this.current._password
+            // )
+            // await currentUser.reauthenticateWithCredential(credential)
             await currentUser.updateEmail(email)
         }
         else {
@@ -47,7 +52,6 @@ class User {
             })
         }
 
-        this.set(currentUser)
 
         if (isCustomHandler) {
             return
@@ -64,14 +68,22 @@ class User {
     }
 
     @action.bound async updatePassword({ oldPassword, password, }) {
-        if (oldPassword !== this.current._password) {
+        const { currentUser, } = firebase.auth
+        let credential = firebase._auth.EmailAuthProvider.credential(
+            this.current.email,
+            oldPassword
+        )
+        try {
+            await currentUser.reauthenticateWithCredential(credential)
+        }
+        catch (e) {
             return Modal.error({
                 title: "Something wrong...",
                 content: "The old password does not match the entered one",
             })
         }
 
-        if (password === this.current._password) {
+        if (password === oldPassword) {
             return Modal.warning({
                 title: "Hmm...",
                 content: "The new password is the same as the old one",

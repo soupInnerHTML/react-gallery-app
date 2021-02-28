@@ -12,6 +12,15 @@ class Likes {
         return this._likes
     }
 
+    observer(userId) {
+        _firebase.db(`likes/${userId}`)
+            .orderByChild("timestamp")
+            .on("value", (snapshot) => {
+                const data = snapshot.val()
+                this.set(data).then()
+            })
+    }
+
     @action.bound async set(data) {
         this._likes = Object.entries(data || {}).map(
             entry => ({
@@ -22,6 +31,13 @@ class Likes {
         ).reverse()
 
         this.isLoaded = true
+
+        console.log(this._likes)
+
+        feed.photos = feed.photos.map(photo => ({
+            ...photo,
+            liked: !!this._likes.find(x => x.idApi === photo.idApi),
+        }))
     }
 
     @action.bound async saveLike(photo) {
@@ -37,14 +53,13 @@ class Likes {
 
     }
 
-    @action.bound async deleteLike(photo) {
+    @action.bound deleteLike(photo) {
         runInAction(() => {
             photo.liked = false
             //remove like from feed | cache
             let feedPhoto = (feed.photos.length ? feed.photos : feed.cachedPhotos).find(_photo => _photo.idApi === photo.idApi)
             feedPhoto && (feedPhoto.liked = false)
         })
-        await _firebase.db(`likes/${user.current.uid}/${photo.id}`).remove()
     }
 
     constructor() {

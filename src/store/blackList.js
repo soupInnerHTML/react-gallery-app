@@ -1,7 +1,7 @@
 import { message } from "antd";
 import { action, makeObservable, runInAction, observable, configure } from "mobx";
-import { eparse } from "../utils/eparse";
 import auth from "./auth";
+import feed from "./feed";
 import likes from "./likes";
 import user from "./user";
 import _firebase from "../global/firebase";
@@ -19,9 +19,10 @@ class BlackList {
     }
 
     @action.bound async set(customId) {
-        const { data, } = await _firebase.db(`blackLists/${customId || user.current.uid}`)
+        const data = await _firebase.db(`blackLists/${customId || user.current.uid}`).get()
         if (data) {
             this._blackList = Object.values(data)
+            feed.photos = feed.photos.filter(photo => !this._blackList.includes(photo.idApi))
         }
     }
 
@@ -36,7 +37,7 @@ class BlackList {
             message.success("The photo was successfully added to black list");
         }
         catch (e) {
-            message.error(eparse(e));
+            message.error(e)
         }
     }
 

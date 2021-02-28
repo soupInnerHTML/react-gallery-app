@@ -22,6 +22,7 @@ export default observer(() => {
 
     const { Link, } = Typography;
 
+
     return (
         <>
             <Row justify={"center"} style={{ textAlign: "center", }}>

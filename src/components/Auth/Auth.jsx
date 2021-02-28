@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { runInAction } from "mobx";
+import React, { useState } from "react";
 import { Col, Form, Input, Modal, Row, Typography } from "antd";
-import { gAuth, gSignIn } from "../../api/google";
 import { observer } from "mobx-react-lite";
 import { uniqueId } from "lodash";
 import { CloseCircleOutlined } from "@ant-design/icons";
@@ -15,9 +15,10 @@ export default observer(() => {
     const [isFetching, setFetching] = useState(false)
     const [gProcessing, setGProcessing] = useState(false)
 
-    useEffect(() => {
-        gAuth()
-    }, [])
+    const authBy = (outer, fetchFn, values) => {
+        runInAction(() => auth.outer = outer)
+        auth.signProcessing(values, fetchFn).then()
+    }
 
     return (
         <Modal
@@ -29,7 +30,7 @@ export default observer(() => {
             onCancel={() => auth.openModal(false)}
             width={1000}
         >
-            <Form layout={"vertical"} onFinish={(values) => auth.signProcessing(values, setFetching)}>
+            <Form layout={"vertical"} onFinish={values => authBy(false, setFetching, values)}>
 
                 <Row gutter={30} justify={"center"} wrap={true}>
                     {
@@ -60,14 +61,31 @@ export default observer(() => {
 
                 <div className="text-center">
                     <Form.Item>
-                        <Typography.Link onClick={changeSignMode.bind(0, 0)} disabled={gProcessing || isFetching}>
+                        <Typography.Link
+                            onClick={changeSignMode.bind(0, 0)}
+                            disabled={gProcessing || isFetching}
+                        >
                             {formTemplate.switchText}
                         </Typography.Link>
                     </Form.Item>
 
                     <Form.Item className={"auth__btns"}>
-                        <CustomBtn type="primary" htmlType="submit" loading={isFetching} disabled={gProcessing}>Sign {auth.signMode}</CustomBtn>
-                        <CustomBtn icon={<CustomGoogleIcon/>} onClick={gSignIn.bind(0, setGProcessing)} disabled={isFetching || gProcessing}>Sign in with Google</CustomBtn>
+                        <CustomBtn
+                            type="primary"
+                            htmlType="submit"
+                            loading={isFetching}
+                            disabled={gProcessing}
+                        >
+                            Sign {auth.signMode}
+                        </CustomBtn>
+
+                        <CustomBtn
+                            icon={<CustomGoogleIcon/>}
+                            onClick={() => authBy("google", setGProcessing)}
+                            disabled={isFetching || gProcessing}
+                        >
+                            Sign in with Google
+                        </CustomBtn>
                     </Form.Item>
 
                 </div>

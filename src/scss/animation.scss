@@ -8,6 +8,9 @@
 }
 .fadeIn {
   animation: fadeIn 1s;
+  &_ {
+    animation: fadeIn .3s;
+  }
 }
 @keyframes fadeOut {
   from {
@@ -19,6 +22,9 @@
 }
 .fadeOut {
   animation: fadeOut 1s forwards;
+  &_ {
+    animation: fadeOut .3s  forwards;
+  }
 }
 
 $p: 1.5;

@@ -1,1 +1,0 @@
-export const eparse = e => String(e).replace("Error: ", "")

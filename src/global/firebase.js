@@ -4,10 +4,10 @@ import "firebase/auth"
 import "firebase/storage"
 
 class Firebase {
+    _auth = firebase.auth
     db(path) {
         return firebase.database().ref(path)
     }
-    _auth = firebase.auth
     get auth() {
         return this._auth()
     }
@@ -18,6 +18,7 @@ class Firebase {
         apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
         databaseURL: process.env.REACT_APP_DB_URL,
         storageBucket: "gs://react-gallery-app-fe070.appspot.com",
+        authDomain: "react-gallery-app-fe070.firebaseapp.com",
     }
     init() {
         firebase.initializeApp(this.config)

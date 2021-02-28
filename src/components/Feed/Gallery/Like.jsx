@@ -1,34 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { observer } from "mobx-react-lite";
 import cs from "classnames"
+import _firebase from "../../../global/firebase";
 import auth from "../../../store/auth";
 import likes from "../../../store/likes";
+import user from "../../../store/user";
 
 export default observer(({ visible, photo, }) => {
     const [isClicked, setClick] = useState(false)
-    const [isRejected, setReject] = useState(false)
 
     let isLiked = photo.liked
 
     const like = (flag = true) => {
         setClick(true)
         if (!auth.isLoggedIn) {
-            setTimeout(auth.openModal, 500)
-            return setReject(true)
+            return setTimeout(auth.openModal, 500)
         }
 
         flag ? likes.saveLike(photo) : likes.deleteLike(photo)
     }
 
-    useEffect(() => {
-        if (!visible && !isLiked) {
-            setClick(false)
-        }
-    }, [visible, isLiked])
+    const removeLike = async () => {
+        setClick(false)
+        await _firebase.db(`likes/${user.current.uid}/${photo.id}`).remove()
+    }
 
     return (
-        <div className={visible || isLiked ? "like" : "d-none"}>
+        <div className={visible || isClicked || isLiked ? "fadeIn_" : "fadeOut_"}>
             {
                 isLiked ?
                     <HeartFilled
@@ -37,7 +36,8 @@ export default observer(({ visible, photo, }) => {
                     />
                     :
                     <HeartOutlined
-                        className={cs("like__default", { anim: isClicked, rejected: isRejected && isClicked, })}
+                        className={cs("like__default", { anim: isClicked, })}
+                        onAnimationEnd={removeLike}
                         onClick={like}
                     />
             }

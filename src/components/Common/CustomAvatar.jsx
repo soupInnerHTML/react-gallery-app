@@ -12,8 +12,6 @@ const CustomAvatar = ({ size, currentTab, isAvatarEditVisible, }) => {
     const { photoURL, } = user.current || {}
     const [isFileLoading, setFileLoading] = React.useState(false)
 
-    React.useEffect(() => console.log(photoURL), [photoURL])
-
     let selectAvatar = async e => {
         setFileLoading(true)
         let file = e.target.files[0]
@@ -23,7 +21,6 @@ const CustomAvatar = ({ size, currentTab, isAvatarEditVisible, }) => {
                 contentType: file.type,
             })
             let photoURL = await snapshot.ref.getDownloadURL()
-            console.log(photoURL)
             await user.editProfileInfo({ photoURL, }, "", true)
             setFileLoading(false)
             message.success("The avatar has been successfully updated");
@@ -32,14 +29,14 @@ const CustomAvatar = ({ size, currentTab, isAvatarEditVisible, }) => {
 
     return (
         <div style={{ position: "relative", }}>
-            <div className={cs(
+            {!user.current.outer && <div className={cs(
                 "profile-settings__avatar-edit",
                 currentTab - 1 ? "fadeIn" : "fadeOut",
                 { "d-none": !isAvatarEditVisible, }
             )}>
                 <input onChange={ selectAvatar } type="file"/>
                 <Button icon={<EditOutlined />} shape={"circle"} loading={isFileLoading}/>
-            </div>
+            </div>}
 
             <Avatar
                 className="header__avatar"

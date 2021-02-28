@@ -59,7 +59,7 @@ class Feed {
                 idApi = sample(this.ids)
             }
             else {
-                idApi = getRandInt(500)
+                idApi = getRandInt(495, 497)
             }
 
             const base = "https://picsum.photos/id/" + idApi
