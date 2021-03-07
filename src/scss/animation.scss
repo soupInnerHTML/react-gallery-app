@@ -1,174 +1,174 @@
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
 }
 .fadeIn {
-  animation: fadeIn 1s;
-  &_ {
-    animation: fadeIn .3s;
-  }
+	animation: fadeIn 1s;
+	&_ {
+		animation: fadeIn 0.3s;
+	}
 }
 @keyframes fadeOut {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
 }
 .fadeOut {
-  animation: fadeOut 1s forwards;
-  &_ {
-    animation: fadeOut .3s  forwards;
-  }
+	animation: fadeOut 1s forwards;
+	&_ {
+		animation: fadeOut 0.3s forwards;
+	}
 }
 
 $p: 1.5;
 @keyframes pulse {
-  0% {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
+	0% {
+		-webkit-transform: scale(1);
+		transform: scale(1);
+	}
 
-  14% {
-    -webkit-transform: scale($p);
-    transform: scale($p);
-  }
+	14% {
+		-webkit-transform: scale($p);
+		transform: scale($p);
+	}
 
-  28% {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
+	28% {
+		-webkit-transform: scale(1);
+		transform: scale(1);
+	}
 
-  42% {
-    -webkit-transform: scale($p);
-    transform: scale($p);
-  }
+	42% {
+		-webkit-transform: scale($p);
+		transform: scale($p);
+	}
 
-  70% {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
+	70% {
+		-webkit-transform: scale(1);
+		transform: scale(1);
+	}
 }
 @keyframes shake {
-  0% {
-    -webkit-transform: translateX(0);
-    transform: translateX(0);
-  }
+	0% {
+		-webkit-transform: translateX(0);
+		transform: translateX(0);
+	}
 
-  6.5% {
-    -webkit-transform: translateX(-6px) rotateY(-9deg);
-    transform: translateX(-6px) rotateY(-9deg);
-  }
+	6.5% {
+		-webkit-transform: translateX(-6px) rotateY(-9deg);
+		transform: translateX(-6px) rotateY(-9deg);
+	}
 
-  18.5% {
-    -webkit-transform: translateX(5px) rotateY(7deg);
-    transform: translateX(5px) rotateY(7deg);
-  }
+	18.5% {
+		-webkit-transform: translateX(5px) rotateY(7deg);
+		transform: translateX(5px) rotateY(7deg);
+	}
 
-  31.5% {
-    -webkit-transform: translateX(-3px) rotateY(-5deg);
-    transform: translateX(-3px) rotateY(-5deg);
-  }
+	31.5% {
+		-webkit-transform: translateX(-3px) rotateY(-5deg);
+		transform: translateX(-3px) rotateY(-5deg);
+	}
 
-  43.5% {
-    -webkit-transform: translateX(2px) rotateY(3deg);
-    transform: translateX(2px) rotateY(3deg);
-  }
+	43.5% {
+		-webkit-transform: translateX(2px) rotateY(3deg);
+		transform: translateX(2px) rotateY(3deg);
+	}
 
-  50% {
-    -webkit-transform: translateX(0);
-    transform: translateX(0);
-  }
+	50% {
+		-webkit-transform: translateX(0);
+		transform: translateX(0);
+	}
 }
 @mixin backOutDown($gradient, $postfix: "") {
-  @keyframes backOutDown#{$postfix}{
-    0%{
-      -webkit-transform:scale(1);
-      transform:scale(1);
-      opacity:1;
-      height: 46px;
-    }
-    20%{
-      -webkit-transform:translateY(0) scale(.7);
-      transform:translateY(0) scale(.7);
-      opacity:.7;
-      height: 25px;
-    }
-    90%{
-      -webkit-transform:translateY($gradient) scale(.7);
-      transform:translateY($gradient) scale(.7);
-      opacity:.7;
-      height: 0;
-    }
-    to {
-      -webkit-transform:translateY($gradient) scale(.7);
-      transform:translateY($gradient) scale(.7);
-      opacity: 0;
-      height: 0;
-    }
-  }
+	@keyframes backOutDown#{$postfix} {
+		0% {
+			-webkit-transform: scale(1);
+			transform: scale(1);
+			opacity: 1;
+			height: 46px;
+		}
+		20% {
+			-webkit-transform: translateY(0) scale(0.7);
+			transform: translateY(0) scale(0.7);
+			opacity: 0.7;
+			height: 25px;
+		}
+		90% {
+			-webkit-transform: translateY($gradient) scale(0.7);
+			transform: translateY($gradient) scale(0.7);
+			opacity: 0.7;
+			height: 0;
+		}
+		to {
+			-webkit-transform: translateY($gradient) scale(0.7);
+			transform: translateY($gradient) scale(0.7);
+			opacity: 0;
+			height: 0;
+		}
+	}
 }
 
 $simple: 190px;
 $longer: 245px;
 @include backOutDown($simple);
-@include backOutDown($longer, 'Longer');
+@include backOutDown($longer, "Longer");
 
 @mixin backInUp($gradient, $postfix: "") {
-  @keyframes backInUp#{$postfix}{
-    0%{
-      -webkit-transform: scale(.7);
-      transform:translateY(1200px) scale(.7);
-      opacity:.7;
-      height: 0;
-    }
-    80%{
-      -webkit-transform: translateY(0) scale(.7);
-      transform: translateY(0) scale(.7);
-      opacity: .7;
-      height: 25px;
-    }
-    to{
-      -webkit-transform: scale(1);
-      transform:scale(1);
-      opacity:1;
-      height: 46px;
-    }
-  }
+	@keyframes backInUp#{$postfix} {
+		0% {
+			-webkit-transform: scale(0.7);
+			transform: translateY($gradient) scale(0.7);
+			opacity: 0.7;
+			height: 0;
+		}
+		80% {
+			-webkit-transform: translateY(0) scale(0.7);
+			transform: translateY(0) scale(0.7);
+			opacity: 0.7;
+			height: 25px;
+		}
+		to {
+			-webkit-transform: scale(1);
+			transform: scale(1);
+			opacity: 1;
+			height: 46px;
+		}
+	}
 }
 
 @include backInUp($simple);
-@include backInUp($longer, 'Longer');
+@include backInUp($longer, "Longer");
 
 @mixin withAnim($anim, $time: 1s) {
-  animation: $anim $time;
-  animation-fill-mode: forwards;
-  display: block;
+	animation: $anim $time;
+	animation-fill-mode: forwards;
+	display: block;
 }
 .backOutDown {
-  @include withAnim(backOutDown)
+	@include withAnim(backOutDown);
 }
 .backOutDownLonger {
-  @include withAnim(backOutDownLonger)
+	@include withAnim(backOutDownLonger);
 }
 $t: 1.3s;
 .backInUp {
-  @include withAnim(backInUp, $t)
+	@include withAnim(backInUp, $t);
 }
 .backInUpLonger {
-  @include withAnim(backInUpLonger, $t)
+	@include withAnim(backInUpLonger, $t);
 }
 
-@keyframes slide{
-  0%{
-    height: 0;
-  }
-  to{
-    height: 41px;
-  }
+@keyframes slide {
+	0% {
+		height: 0;
+	}
+	to {
+		height: 41px;
+	}
 }

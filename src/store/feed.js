@@ -20,7 +20,7 @@ class Feed {
     }
 
     @action.bound addPhotos(newPhotos = this.generateRandomPhotos()) {
-        this.photos.push(...newPhotos )
+        this.photos.push(...newPhotos)
     }
     @action.bound lazyLoad() {
         const windowHeight = window.innerHeight
@@ -59,7 +59,7 @@ class Feed {
                 idApi = sample(this.ids)
             }
             else {
-                idApi = getRandInt(495, 497)
+                idApi = getRandInt(500)
             }
 
             const base = "https://picsum.photos/id/" + idApi

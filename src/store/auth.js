@@ -29,7 +29,7 @@ class Auth {
         }
     }
 
-    @action.bound openModal(flag = true ) {
+    @action.bound openModal(flag = true) {
         this.isModalVisible = flag
     }
     @action.bound changeSignMode(select) {
@@ -42,35 +42,40 @@ class Auth {
         this.isLoggedOut = true
         this.isLoggedIn = false
         localUser.set(null)
-        //otherwise there are likes after logout
-        feed.photos = feed.photos.map(photo => ({ ...photo, liked: false, }) )
+
+        //remove likes after logout
+        if (feed.photos.length) {
+            feed.photos = feed.photos.map(photo => ({ ...photo, liked: false, }))
+        }
+        if (feed.cachedPhotos.length) {
+            feed.cachedPhotos = feed.cachedPhotos.map(photo => ({ ...photo, liked: false, }))
+        }
     }
 
     check() {
-        const { logout, isLoggedIn, } = this
-        const storageId = localStorage.getItem("auth")
+        const getSID = () => localStorage.getItem("auth")
 
-        //subscribe to likes from user by storage id
-        likes.observer(storageId)
-        blackList.set(storageId).then()
-
-        firebase.auth.onAuthStateChanged(function(_user) {
-            if (!isLoggedIn) {
-                return
-            }
+        firebase.auth.onAuthStateChanged(_user => {
             if (_user) {
-                // console.log(_user)
                 const { displayName, email, photoURL, uid, providerData, } = _user
-                if (uid !== storageId) {
-                    return logout()
+                if (this.isLoggedIn && uid !== getSID()) {
+                    console.log("exit", "sid: " + getSID(), "uid: " + uid)
+                    return this.logout()
                 }
                 localUser.set({
                     displayName, email, photoURL, uid,
-                    outer: providerData[0].providerId,
+                    outer: providerData[0].providerId !== "password",
+                    // google.com & etc -> true
+                    // by password -> false
                 })
+
+                //subscribe to likes from user by storage id
+                likes.observer(uid)
+                blackList.set(uid)
+
+                console.log("wellcome")
             } else {
-                console.log("No user is signed in.")
-                logout().then()
+                console.log("No user is signed in")
             }
         });
     }
@@ -111,7 +116,7 @@ class Auth {
     async signIn({ email, password, }) {
         const userCredential = await firebase.auth.signInWithEmailAndPassword(email, password)
         const { displayName, photoURL, uid, } = userCredential.user
-        return  {
+        return {
             email,
             displayName,
             photoURL,

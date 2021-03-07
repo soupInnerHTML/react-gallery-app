@@ -30,4 +30,3 @@ export default observer((props) => {
         <Gallery />
     )
 })
-

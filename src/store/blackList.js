@@ -14,14 +14,14 @@ class BlackList {
 
     @observable _blackList = []
 
-    @action.bound get()  {
+    @action.bound get() {
         return this._blackList
     }
 
     @action.bound async set(customId) {
         const data = await _firebase.db(`blackLists/${customId || user.current.uid}`).get()
-        if (data) {
-            this._blackList = Object.values(data)
+        if (data.val()) {
+            this._blackList = Object.values(data.val())
             feed.photos = feed.photos.filter(photo => !this._blackList.includes(photo.idApi))
         }
     }

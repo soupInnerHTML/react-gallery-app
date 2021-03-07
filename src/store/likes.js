@@ -8,17 +8,19 @@ class Likes {
     @observable _likes = []
     @observable isLoaded = false
 
-    get = () =>  {
+    get = () => {
         return this._likes
     }
 
     observer(userId) {
-        _firebase.db(`likes/${userId}`)
-            .orderByChild("timestamp")
-            .on("value", (snapshot) => {
-                const data = snapshot.val()
-                this.set(data).then()
-            })
+        if (userId) {
+            _firebase.db(`likes/${userId || localStorage.getItem("auth")}`)
+                .orderByChild("timestamp")
+                .on("value", (snapshot) => {
+                    const data = snapshot.val()
+                    this.set(data).then()
+                })
+        }
     }
 
     @action.bound async set(data) {
@@ -32,7 +34,7 @@ class Likes {
 
         this.isLoaded = true
 
-        console.log(this._likes)
+        // console.log(this._likes)
 
         feed.photos = feed.photos.map(photo => ({
             ...photo,
@@ -41,10 +43,7 @@ class Likes {
     }
 
     @action.bound async saveLike(photo) {
-        runInAction(() => photo.liked = true)
         const { url, bigV, id, idApi, } = photo
-
-
         await _firebase.db(`likes/${user.current.uid}/${id}`).set({
             url,
             bigV,

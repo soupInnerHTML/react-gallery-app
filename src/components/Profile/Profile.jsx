@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { UserOutlined, HomeOutlined } from "@ant-design/icons";
 import { PageHeader, Space, Tabs, Divider, Typography, Breadcrumb, Skeleton } from "antd";
 import { useHistory } from "react-router-dom";
@@ -11,14 +11,15 @@ import ProfileSettings from "./ProfileSettings";
 
 const Profile = () => {
     const [currentTab, setCurrentTab] = useState(1)
+    const [activePanel, setActivePanel] = useState(["1"])
     const [isAvatarEditVisible, setAvatarEditVisible] = useState(false)
-    const { TabPane, } = Tabs;
-    const { Title, Text, } = Typography;
-    const history = useHistory();
+    const history = useHistory()
 
+    const { TabPane, } = Tabs
+    const { Title, Text, } = Typography
     const { displayName, email, outer, } = user.current || {}
 
-    const animSwitch = currentTab == 2 ? "backOutDown" : "backInUp"
+    const animSwitch = currentTab == 2 && activePanel.includes("1") ? "backOutDown" : "backInUp"
     const maxAnimSwitch = typeof currentTab == "string" && !outer ? animSwitch : ""
 
     return (
@@ -30,7 +31,12 @@ const Profile = () => {
             />
 
 
-            <Space className={"w-100"} direction={"vertical"} align={"center"} style={{ zIndex: 2, }}>
+            <Space 
+                className={"w-100"} 
+                direction={"vertical"} 
+                align={"center"} 
+                style={{ zIndex: 2, }}
+            >
                 <Breadcrumb className={"profile__breadcrumb"}>
                     <Breadcrumb.Item href={routes.home}>
                         <HomeOutlined />
@@ -46,14 +52,22 @@ const Profile = () => {
                 <Title className={maxAnimSwitch}>
                     {displayName ||
                     <div className="username__placeholder">
-                        <Skeleton title={{ width: 100, }} paragraph={{ rows: 0, }} active/>
+                        <Skeleton 
+                            title={{ width: 100, }} 
+                            paragraph={{ rows: 0, }} 
+                            active
+                        />
                     </div>}
 
                 </Title>
                 <Text type="secondary" className={maxAnimSwitch + "Longer"}>
                     {email ||
                     <div className="email__placeholder">
-                        <Skeleton title={{ width: 150, }} paragraph={{ rows: 0, }} active/>
+                        <Skeleton 
+                            title={{ width: 150, }} 
+                            paragraph={{ rows: 0, }} 
+                            active
+                        />
                     </div>}
                 </Text>
             </Space>
@@ -72,7 +86,7 @@ const Profile = () => {
                 </TabPane>
 
                 <TabPane tab="Profile settings" key="2">
-                    <ProfileSettings/>
+                    <ProfileSettings {...{ setActivePanel, }}/>
                 </TabPane>
             </Tabs>
         </div>

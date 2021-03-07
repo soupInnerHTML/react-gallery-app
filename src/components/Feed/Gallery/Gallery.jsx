@@ -12,7 +12,7 @@ export default observer(({ mode, }) => {
     const _photos = mode ? likes.get() : feed.photos
 
     if (!likes.isLoaded && mode) {
-        return <Row  align={"center"}>
+        return <Row align={"center"}>
             <Spin size="large" />
         </Row>
     }
