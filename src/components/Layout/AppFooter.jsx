@@ -1,5 +1,6 @@
 import { Layout, Typography } from "antd";
 import React from "react";
+import CustomFirebaseIcon from "../../assets/icons/firebase.svg";
 
 const AppFooter = () => {
 
@@ -16,6 +17,9 @@ const AppFooter = () => {
             <br/>
             <Typography.Text type="secondary">
                 Images from <a href={"https://picsum.photos/"} target={"_blank"} rel={"noopener noreferrer"}>Picsum</a>
+            </Typography.Text>
+            <Typography.Text type="secondary">
+                Fire based <CustomFirebaseIcon/>
             </Typography.Text>
         </Layout.Footer>
     );

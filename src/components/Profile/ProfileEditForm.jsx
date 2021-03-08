@@ -1,12 +1,22 @@
 import { Form, Input } from "antd";
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useState } from "react";
 import { sign, required } from "../../global/inputData";
 import user from "../../store/user";
 import CustomBtn from "../Common/CustomBtn";
 import { input } from "../../global/styles";
 
 const ProfileEditForm = ({ mode, }) => {
+
+    const [isFetching, setFetching] = useState(false)
+
+    const proccesUpdating = fn => {
+        return async values => {
+            setFetching(true)
+            await fn(values)
+            setFetching(false)
+        }
+    }
 
     const form = {
         data: {
@@ -22,7 +32,7 @@ const ProfileEditForm = ({ mode, }) => {
                 placeholder: "New email",
                 rules: sign.up.fields[0].rules,
             }],
-            onFinish: user.editProfileInfo,
+            onFinish: proccesUpdating(user.editProfileInfo),
             submitText: "Edit",
         },
         password: {
@@ -42,7 +52,7 @@ const ProfileEditForm = ({ mode, }) => {
                 rules: sign.up.fields[3].rules,
                 dependencies: sign.up.fields[3].dependencies,
             }],
-            onFinish: user.updatePassword,
+            onFinish: proccesUpdating(user.updatePassword),
             submitText: "Update",
         },
     }
@@ -60,7 +70,7 @@ const ProfileEditForm = ({ mode, }) => {
                 </Form.Item>
             ))}
 
-            <CustomBtn type="primary" htmlType="submit">{submitText}</CustomBtn>
+            <CustomBtn type="primary" htmlType="submit" loading={isFetching}>{submitText}</CustomBtn>
         </Form>
     );
 };

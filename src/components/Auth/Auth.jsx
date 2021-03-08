@@ -1,13 +1,13 @@
 import { runInAction } from "mobx";
 import React, { useState } from "react";
-import { Col, Form, Input, Modal, Row, Typography } from "antd";
+import { Col, Form, Input, Row, Typography } from "antd";
 import { observer } from "mobx-react-lite";
 import { uniqueId } from "lodash";
-import { CloseCircleOutlined } from "@ant-design/icons";
 import { CustomGoogleIcon } from "../Common/CustomGoogleIcon";
 import { input } from "../../global/styles";
 import CustomBtn from "../Common/CustomBtn";
 import auth from "../../store/auth";
+import AuthModal from "../Common/AuthModal";
 
 export default observer(() => {
     const { formTemplate, changeSignMode, } = auth
@@ -21,14 +21,9 @@ export default observer(() => {
     }
 
     return (
-        <Modal
-            centered
-            className={"auth__modal"}
+        <AuthModal
             visible={auth.isModalVisible}
-            footer={null}
-            closeIcon={<CloseCircleOutlined />}
             onCancel={() => auth.openModal(false)}
-            width={1000}
         >
             <Form layout={"vertical"} onFinish={values => authBy(false, setFetching, values)}>
 
@@ -90,6 +85,6 @@ export default observer(() => {
 
                 </div>
             </Form>
-        </Modal>
+        </AuthModal>
     )
 })

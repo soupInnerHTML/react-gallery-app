@@ -58,6 +58,7 @@ export default observer(({ setActivePanel, }) => {
                             <Link key="3" onClick={confirm} className={"profile-settings__danger"}>
                                 Delete profile
                             </Link>
+                            
                             <Link key="4" onClick={auth.logout} className={"profile-settings__danger"}>
                                 Exit
                             </Link>

@@ -8,11 +8,13 @@ import feed from "./feed";
 import likes from "./likes";
 import localUser from "./user";
 import firebase from "../global/firebase";
+import { eparse } from "../utils/eparse";
 
 class Auth {
     @observable isLoggedIn = !!localStorage.getItem("auth")
     @observable isLoggedOut = false
     @observable isModalVisible = false
+    @observable isRe = false
     @observable signMode = "in"
     @observable outer = false
 
@@ -69,6 +71,9 @@ class Auth {
                     // by password -> false
                 })
 
+                localStorage.setItem("auth", uid)
+                this.isLoggedIn = true
+
                 //subscribe to likes from user by storage id
                 likes.observer(uid)
                 blackList.set(uid)
@@ -96,7 +101,7 @@ class Auth {
             setFetching(false)
             Modal.error({
                 title: "Error",
-                content: e,
+                content: eparse(e),
             })
         }
     }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { UserOutlined, HomeOutlined } from "@ant-design/icons";
 import { PageHeader, Space, Tabs, Divider, Typography, Breadcrumb, Skeleton } from "antd";
 import { useHistory } from "react-router-dom";
@@ -8,6 +8,7 @@ import user from "../../store/user";
 import CustomAvatar from "../Common/CustomAvatar";
 import Gallery from "../Feed/Gallery/Gallery";
 import ProfileSettings from "./ProfileSettings";
+import ReauthModal from "./ReauthModal";
 
 const Profile = () => {
     const [currentTab, setCurrentTab] = useState(1)
@@ -21,6 +22,7 @@ const Profile = () => {
 
     const animSwitch = currentTab == 2 && activePanel.includes("1") ? "backOutDown" : "backInUp"
     const maxAnimSwitch = typeof currentTab == "string" && !outer ? animSwitch : ""
+    
 
     return (
         <div className={"profile"}>
@@ -89,6 +91,8 @@ const Profile = () => {
                     <ProfileSettings {...{ setActivePanel, }}/>
                 </TabPane>
             </Tabs>
+
+            <ReauthModal/>
         </div>
     );
 };
