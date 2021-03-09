@@ -9,17 +9,22 @@ import cs from "classnames"
 import user from "../../../store/user"
 import auth from "../../../store/auth";
 
-export default observer(({ photo, }) => {
+export default observer(({ photo, mode, }) => {
+
+    const [isCollapsed, setIsCollapsed] = useState(false)
+    const [isSlided, setIsSlided] = useState(false)
+    const [isError, setError] = useState(false)
+    const [isHover, setHover] = useState(false)
 
     const fixedScales = {
         // width: feed.IMG_WIDTH,
         // height: feed.IMG_HEIGHT,
         // width: 500,
         height: photo.height || photo.url.match(/\d+/g)[1],
+        ...(isCollapsed ? { animation: "collapse 1s forwards", } : {}),
+        ...(isSlided && mode ? { animation: "unslide 1s forwards", } : {}),
     }
 
-    const [isError, setError] = useState(false)
-    const [isHover, setHover] = useState(false)
 
     function confirm() {
         if (!auth.isLoggedIn) {
@@ -45,6 +50,13 @@ export default observer(({ photo, }) => {
             style={fixedScales}
             onMouseOver={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
+            // onAnimationEnd={(anim) => isCollapsed && blackList.addPhoto(photo)}
+            onAnimationEnd={(e) => {
+                e.persist()
+                if (e.animationName === "collapse") {
+                    blackList.addPhoto(photo)
+                }
+            }}
         >
             <Image
                 onError={() => setError(true)}
@@ -63,7 +75,7 @@ export default observer(({ photo, }) => {
 
             <Space className={"gallery-item__panel"} size={"large"}>
 
-                <Tooltip title={"ignore this photo"} onClick={() => blackList.addPhoto(photo)}>
+                <Tooltip title={"ignore this photo"} onClick={() => setIsCollapsed(true)}>
                     <CloseOutlined
                         className={isHover ? "fadeIn_" : "fadeOut_"}
                     />
@@ -81,7 +93,7 @@ export default observer(({ photo, }) => {
                     />
                 </a>
 
-                <Like visible={isHover} {...{ photo, }} />
+                <Like visible={isHover} onClick={() => setIsSlided(true)} {...{ photo, mode, }} />
             </Space>
 
 

@@ -22,7 +22,7 @@ const AppHeader = () => {
     return (
         <Layout.Header className="header">
             <Row className="container header-inner">
-                <Menu theme="dark" mode="horizontal">
+                <Menu theme="dark" mode="horizontal" selectable={false} >
                     {pathname !== routes.feed && <Menu.Item key="3"><Link to={routes.feed}>Feed</Link></Menu.Item>}
                 </Menu>
 

@@ -172,3 +172,14 @@ $t: 1.3s;
 		height: 41px;
 	}
 }
+
+@keyframes collapse {
+	to {
+		height: 0;
+	}
+}
+@keyframes unslide {
+	to {
+		width: 0;
+	}
+}

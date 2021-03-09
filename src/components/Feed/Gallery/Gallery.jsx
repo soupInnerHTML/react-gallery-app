@@ -31,7 +31,7 @@ export default observer(({ mode, }) => {
                                 _photos.map(photo => (
                                     <GalleryItem
                                         key={photo.id}
-                                        {...{ photo, }}
+                                        {...{ photo, mode, }}
                                     />
                                 ))
                             }
