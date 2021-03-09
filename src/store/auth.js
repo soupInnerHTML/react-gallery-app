@@ -9,6 +9,7 @@ import likes from "./likes";
 import localUser from "./user";
 import firebase from "../global/firebase";
 import { eparse } from "../utils/eparse";
+import user from "./user";
 
 class Auth {
     @observable isLoggedIn = !!localStorage.getItem("auth")
@@ -43,6 +44,7 @@ class Auth {
         localStorage.removeItem("auth")
         this.isLoggedOut = true
         this.isLoggedIn = false
+        user.current = []
         localUser.set(null)
 
         //remove likes after logout

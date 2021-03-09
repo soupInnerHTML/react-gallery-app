@@ -7,21 +7,24 @@ import { observer } from "mobx-react-lite";
 import Like from "./Like";
 import cs from "classnames"
 import user from "../../../store/user"
+import auth from "../../../store/auth";
 
 export default observer(({ photo, }) => {
 
     const fixedScales = {
-        width: feed.IMG_WIDTH,
-        height: feed.IMG_HEIGHT,
+        // width: feed.IMG_WIDTH,
+        // height: feed.IMG_HEIGHT,
+        // width: 500,
+        height: photo.height || photo.url.match(/\d+/g)[1],
     }
-
 
     const [isError, setError] = useState(false)
     const [isHover, setHover] = useState(false)
 
-    // React.useEffect(() => () => console.log("unmount"), [])
-
     function confirm() {
+        if (!auth.isLoggedIn) {
+            return auth.openModal()
+        }
         Modal.confirm({
             title: "Confirm",
             icon: <ExclamationCircleOutlined/>,

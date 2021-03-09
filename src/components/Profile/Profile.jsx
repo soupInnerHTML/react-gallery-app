@@ -28,6 +28,7 @@ const Profile = () => {
         <div className={"profile"}>
             <PageHeader
                 className="site-page-header pos-a"
+                style={{ padding: "0 70px", }}
                 onBack={history.goBack}
                 subTitle="Назад"
             />

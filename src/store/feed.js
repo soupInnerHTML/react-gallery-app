@@ -11,6 +11,8 @@ class Feed {
     @observable IMG_HEIGHT = 500
     @observable R_SHIFT = 100
     @observable M_SHIFT = 300
+    // @observable R_SHIFT = 500
+    // @observable M_SHIFT = 500
 
     @computed get imgWidth() {
         return getRandInt(this.IMG_WIDTH + this.R_SHIFT, this.IMG_WIDTH - this.R_SHIFT)
@@ -74,6 +76,8 @@ class Feed {
                 timestamp,
                 idApi,
                 fromFeed: true,
+                width: getRandInt(this.IMG_WIDTH + this.R_SHIFT, this.IMG_WIDTH - this.R_SHIFT),
+                height: getRandInt(this.IMG_HEIGHT + this.R_SHIFT, this.IMG_HEIGHT - this.R_SHIFT),
                 bigV: `${base}/${_h + this.M_SHIFT}/${_h + this.M_SHIFT}`,
                 id: timestamp + uniqueId(),  //timestamp +
             }

@@ -76,10 +76,12 @@ class User {
             return message.success(_message)
         }
 
-        Modal.success({
-            title: "It's alright",
-            content: "The profile info has been successfully updated",
-        })
+        // Modal.success({
+        //     title: "It's alright",
+        //     content: "The profile info has been successfully updated",
+        // })
+
+        message.success("The profile info has been successfully updated")
     }
 
     @action.bound async changeEmailWithReauth(password) {
@@ -94,10 +96,11 @@ class User {
                 await currentUser.updateEmail(this.emailToChange)
                 this.emailToChange = ""
                 auth.isRe = false
-                Modal.success({
-                    title: "It's alright",
-                    content: "The profile info has been successfully updated",
-                })
+                // Modal.success({
+                //     title: "It's alright",
+                //     content: "The profile info has been successfully updated",
+                // })
+                this.editProfileInfo({ email: this.emailToChange, })
             }
         }
         catch (e) {
@@ -133,10 +136,11 @@ class User {
         }
 
         await firebase.auth.currentUser.updatePassword(password)
-        return Modal.success({
-            title: "Yeah, right",
-            content: "The password has been successfully updated",
-        })
+        // return Modal.success({
+        //     title: "Yeah, right",
+        //     content: "The password has been successfully updated",
+        // })
+        message.success("The password has been successfully updated")
 
     }
     constructor() {

@@ -1,38 +1,33 @@
-.container {
-    max-width: 1200px;
-    margin: auto;
-    width: 100%;
-}
 .w-100 {
-    width: 100%;
+	width: 100%;
 }
 .d-none {
-    display: none !important;
+	display: none !important;
 }
-.pos-a{
-    position: absolute !important;
+.pos-a {
+	position: absolute !important;
 }
 .text-center {
-    text-align: center;
+	text-align: center;
 }
 .default {
-    padding: 0 24px;
+	padding: 0 24px;
 }
 .back-top {
-    width: 50px !important;
-    height: 50px !important;
-    span {
-        display: block !important;
-    }
+	width: 50px !important;
+	height: 50px !important;
+	span {
+		display: block !important;
+	}
 }
 .ant-image-preview-operations {
-    justify-content: flex-end;
+	justify-content: flex-end;
 }
-.ant-form-item-{
-    &required::before {
-        content: '' !important;
-    }
-    &explain-error {
-        text-align: center;
-    }
+.ant-form-item- {
+	&required::before {
+		content: "" !important;
+	}
+	&explain-error {
+		text-align: center;
+	}
 }

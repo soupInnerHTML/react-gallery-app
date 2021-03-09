@@ -1,9 +1,9 @@
 import { Col, Form, Input, Row, Typography } from "antd"
-import input from "antd/lib/input"
 import { runInAction } from "mobx"
 import { observer } from "mobx-react-lite"
 import React, { useState } from "react"
 import { sign } from "../../global/inputData"
+import { input } from "../../global/styles"
 import auth from "../../store/auth"
 import user from "../../store/user"
 import AuthModal from "../Common/AuthModal"
@@ -25,7 +25,7 @@ function ReauthModal() {
             <Form layout={"vertical"} onFinish={_changeEmailWithReauth}>
                 <Row gutter={10} justify={"center"} wrap={true} align={"bottom"} style={{ margin: 33, }}>
                     <Col span={13}>
-                        <Form.Item name="password" rules={sign.up.fields[2].rules}>
+                        <Form.Item name="password" rules={sign.up.fields[2].rules} style={{ margin: 0, }}>
                             <Input.Password 
                                 {...input} 
                                 placeholder={sign.up.fields[2].placeholder}

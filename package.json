@@ -8,17 +8,18 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@ant-design/icons": "^4.4.0",
+        "@ant-design/icons": "^4.5.0",
         "antd": "^4.12.2",
         "classnames": "^2.2.6",
         "firebase": "^8.2.9",
-        "lodash": "^4.17.20",
+        "lodash": "^4.17.21",
         "mobx": "^6.1.5",
         "mobx-react-lite": "^3.2.0",
         "node-sass": "^5.0.0",
         "parcel-bundler": "^1.12.4",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
+        "react-responsive-masonry": "^2.1.1",
         "react-router-dom": "^5.2.0"
     },
     "devDependencies": {
@@ -29,7 +30,7 @@
         "babel-preset-nano-react-app": "^0.1.0",
         "eslint": "^7.19.0",
         "less": "2.7.3",
-        "parcel": "1.9.2",
+        "parcel": "^1.12.4",
         "sass": "^1.32.6"
     },
     "babel": {
