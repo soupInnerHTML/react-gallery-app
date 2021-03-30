@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Empty, Image, Row, Spin } from "antd";
 import { observer } from "mobx-react-lite";
 import feed from "../../../store/feed";
@@ -7,12 +7,11 @@ import GalleryItem from "./GalleryItem";
 import RegenerateBtn from "./RegenerateBtn";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
-export default observer(({ mode, }) => {
+export default observer(({ isLikesSection, }) => {
 
+    const _photos = isLikesSection ? useMemo(likes.get, [isLikesSection, likes.isLoaded]) : feed.photos
 
-    const _photos = mode ? likes.get() : feed.photos
-
-    if (!likes.isLoaded && mode) {
+    if (!likes.isLoaded && isLikesSection) {
         return <Row align={"center"}>
             <Spin size="large" />
         </Row>
@@ -21,7 +20,7 @@ export default observer(({ mode, }) => {
     if (_photos.length) {
         return (
             <div className="wrapper-gallery">
-                {!mode && <RegenerateBtn/>}
+                {!isLikesSection && <RegenerateBtn/>}
                 <Image.PreviewGroup>
                     <ResponsiveMasonry
                         columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3, 1200: 4, }}
@@ -31,7 +30,7 @@ export default observer(({ mode, }) => {
                                 _photos.map(photo => (
                                     <GalleryItem
                                         key={photo.id}
-                                        {...{ photo, mode, }}
+                                        {...{ photo, isLikesSection, }}
                                     />
                                 ))
                             }
@@ -40,12 +39,10 @@ export default observer(({ mode, }) => {
                 </Image.PreviewGroup>
                 {/*Для того, чтобы последняя картинка не центрировалась*/}
                 <div style={{ height: 0, width: feed.IMG_WIDTH, }} />
-            </div>           
+            </div>
         )
     }
 
     return <Empty className={"gallery__empty"} description={"You haven't liked anything yet"}/>
 
 })
-
-//TODO доделать: функция скачивания картинок

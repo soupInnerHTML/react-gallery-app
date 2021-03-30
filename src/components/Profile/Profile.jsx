@@ -22,7 +22,7 @@ const Profile = () => {
 
     const animSwitch = currentTab == 2 && activePanel.includes("1") ? "backOutDown" : "backInUp"
     const maxAnimSwitch = typeof currentTab == "string" && !outer ? animSwitch : ""
-    
+
 
     return (
         <div className={"profile"}>
@@ -34,10 +34,10 @@ const Profile = () => {
             />
 
 
-            <Space 
-                className={"w-100"} 
-                direction={"vertical"} 
-                align={"center"} 
+            <Space
+                className={"w-100"}
+                direction={"vertical"}
+                align={"center"}
                 style={{ zIndex: 2, }}
             >
                 <Breadcrumb className={"profile__breadcrumb"}>
@@ -55,9 +55,9 @@ const Profile = () => {
                 <Title className={maxAnimSwitch}>
                     {displayName ||
                     <div className="username__placeholder">
-                        <Skeleton 
-                            title={{ width: 100, }} 
-                            paragraph={{ rows: 0, }} 
+                        <Skeleton
+                            title={{ width: 100, }}
+                            paragraph={{ rows: 0, }}
                             active
                         />
                     </div>}
@@ -66,9 +66,9 @@ const Profile = () => {
                 <Text type="secondary" className={maxAnimSwitch + "Longer"}>
                     {email ||
                     <div className="email__placeholder">
-                        <Skeleton 
-                            title={{ width: 150, }} 
-                            paragraph={{ rows: 0, }} 
+                        <Skeleton
+                            title={{ width: 150, }}
+                            paragraph={{ rows: 0, }}
                             active
                         />
                     </div>}
@@ -85,7 +85,7 @@ const Profile = () => {
             >
 
                 <TabPane tab="Your likes" key="1">
-                    <Gallery mode={"liked"}/>
+                    <Gallery isLikesSection={true}/>
                 </TabPane>
 
                 <TabPane tab="Profile settings" key="2">

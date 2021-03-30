@@ -11,6 +11,7 @@ class Feed {
     @observable IMG_HEIGHT = 500
     @observable R_SHIFT = 100
     @observable M_SHIFT = 300
+    @observable isLikesOnly = false
     // @observable R_SHIFT = 500
     // @observable M_SHIFT = 500
 

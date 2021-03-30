@@ -7,7 +7,7 @@ import auth from "../../../store/auth";
 import likes from "../../../store/likes";
 import user from "../../../store/user";
 
-export default observer(({ visible, photo, mode, ...props }) => {
+export default observer(({ photo, ...props }) => {
     const [isClicked, setClick] = useState(false)
 
     let isLiked = photo.liked
@@ -27,13 +27,12 @@ export default observer(({ visible, photo, mode, ...props }) => {
     }
 
     return (
-        <div className={visible || isClicked || isLiked ? "fadeIn_" : "fadeOut_"}>
+        <div className={ (props.isHovered || isLiked) ? ( (props.visible || isClicked || isLiked) ? "fadeIn_" : "fadeOut_") : ("d-none")}>
             {
                 isLiked ?
                     <HeartFilled
                         className={cs("like__liked", { anim: isClicked, })}
                         onClick={() => like(false)}
-                        // {...props}
                     />
                     :
                     <HeartOutlined

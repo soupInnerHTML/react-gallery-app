@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import blackList from "../../../store/blackList";
-import feed from "../../../store/feed";
 import { Image, Skeleton, Space, Modal, Tooltip } from "antd";
 import { CloseOutlined, DownloadOutlined, ExclamationCircleOutlined, RadiusSettingOutlined } from "@ant-design/icons";
 import { observer } from "mobx-react-lite";
@@ -8,23 +7,21 @@ import Like from "./Like";
 import cs from "classnames"
 import user from "../../../store/user"
 import auth from "../../../store/auth";
+import download from "downloadjs";
 
-export default observer(({ photo, mode, }) => {
+export default observer(({ photo, isLikesSection, }) => {
 
     const [isCollapsed, setIsCollapsed] = useState(false)
-    const [isSlided, setIsSlided] = useState(false)
     const [isError, setError] = useState(false)
     const [isHover, setHover] = useState(false)
+    const [isHovered, setHovered] = useState(false)
 
     const fixedScales = {
-        // width: feed.IMG_WIDTH,
-        // height: feed.IMG_HEIGHT,
-        // width: 500,
-        height: photo.height || photo.url.match(/\d+/g)[1],
+        height: photo.height,
         ...(isCollapsed ? { animation: "collapse 1s forwards", } : {}),
-        ...(isSlided && mode ? { animation: "unslide 1s forwards", } : {}),
     }
 
+    const panelIconClass = isHovered ? (isHover ? "fadeIn_" : "fadeOut_") : ("d-none")
 
     function confirm() {
         if (!auth.isLoggedIn) {
@@ -48,9 +45,11 @@ export default observer(({ photo, mode, }) => {
         <div
             className='gallery-item'
             style={fixedScales}
-            onMouseOver={() => setHover(true)}
+            onMouseOver={() => {
+                setHover(true)
+                setHovered(true)
+            }}
             onMouseLeave={() => setHover(false)}
-            // onAnimationEnd={(anim) => isCollapsed && blackList.addPhoto(photo)}
             onAnimationEnd={(e) => {
                 e.persist()
                 if (e.animationName === "collapse") {
@@ -75,25 +74,28 @@ export default observer(({ photo, mode, }) => {
 
             <Space className={"gallery-item__panel"} size={"large"}>
 
-                <Tooltip title={"ignore this photo"} onClick={() => setIsCollapsed(true)}>
+                <Tooltip title={"ignore this photo"} onClick={() => {
+                    setIsCollapsed(true)
+                }}>
                     <CloseOutlined
-                        className={isHover ? "fadeIn_" : "fadeOut_"}
+                        className={panelIconClass}
                     />
                 </Tooltip>
 
                 {!user.current.outer && <Tooltip title={"make an avatar"} onClick={confirm}>
                     <RadiusSettingOutlined
-                        className={isHover ? "fadeIn_" : "fadeOut_"}
+                        className={panelIconClass}
                     />
                 </Tooltip>}
 
-                <a href={photo.url} target={"_blank"}>
-                    <DownloadOutlined
-                        className={isHover ? "fadeIn_" : "fadeOut_"}
-                    />
-                </a>
+                <DownloadOutlined
+                    onClick={() => {
+                        download(photo.url)
+                    }}
+                    className={panelIconClass}
+                />
 
-                <Like visible={isHover} onClick={() => setIsSlided(true)} {...{ photo, mode, }} />
+                <Like visible={isHover} {...{ photo, isHovered, }} />
             </Space>
 
 

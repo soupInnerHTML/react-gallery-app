@@ -34,8 +34,6 @@ class Likes {
 
         this.isLoaded = true
 
-        // console.log(this._likes)
-
         feed.photos = feed.photos.map(photo => ({
             ...photo,
             liked: !!this._likes.find(x => x.idApi === photo.idApi),
@@ -43,22 +41,21 @@ class Likes {
     }
 
     @action.bound async saveLike(photo) {
-        const { url, bigV, id, idApi, } = photo
+        const { url, bigV, id, idApi, height, } = photo
         await _firebase.db(`likes/${user.current.uid}/${id}`).set({
             url,
             bigV,
             idApi,
+            height,
         })
 
     }
 
     @action.bound deleteLike(photo) {
-        runInAction(() => {
-            photo.liked = false
-            //remove like from feed | cache
-            let feedPhoto = (feed.photos.length ? feed.photos : feed.cachedPhotos).find(_photo => _photo.idApi === photo.idApi)
-            feedPhoto && (feedPhoto.liked = false)
-        })
+        photo.liked = false
+        //remove like from feed | cache
+        let feedPhoto = (feed.photos.length ? feed.photos : feed.cachedPhotos).find(_photo => _photo.idApi === photo.idApi)
+        feedPhoto && (feedPhoto.liked = false)
     }
 
     constructor() {
