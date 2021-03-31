@@ -4,7 +4,7 @@ import auth from "./auth";
 import feed from "./feed";
 import likes from "./likes";
 import user from "./user";
-import _firebase from "../global/firebase";
+import firebase from "../global/firebase";
 
 configure({
     enforceActions: "never",
@@ -18,8 +18,18 @@ class BlackList {
         return this._blackList
     }
 
+    @action.bound observer(userId) {
+        if (userId) {
+            firebase.db(`blackLists/${userId}`)
+                .on("value", (snapshot) => {
+                    const data = Object.values(snapshot.val())
+                    this._blackList = data
+                })
+        }
+    }
+
     @action.bound async set(customId) {
-        const data = await _firebase.db(`blackLists/${customId || user.current.uid}`).get()
+        const data = await firebase.db(`blackLists/${customId || user.current.uid}`).get()
         if (data.val()) {
             this._blackList = Object.values(data.val())
             feed.photos = feed.photos.filter(photo => !this._blackList.includes(photo.idApi))
@@ -31,9 +41,9 @@ class BlackList {
             if (!auth.isLoggedIn) {
                 return auth.openModal()
             }
-            await _firebase.db(`blackLists/${user.current.uid}/${photo.idApi + +new Date}`).set(photo.idApi)
+
+            await firebase.db(`blackLists/${user.current.uid}/${photo.idApi + +new Date}`).set(photo.idApi)
             await likes.deleteLike(photo)
-            runInAction(() => photo.url = "")
             message.success("The photo was successfully added to black list");
         }
         catch (e) {

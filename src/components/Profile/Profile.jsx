@@ -84,7 +84,7 @@ const Profile = () => {
                 onChange={() => setAvatarEditVisible(true)}
             >
 
-                <TabPane tab="Your likes" key="1">
+                <TabPane tab="My likes" key="1">
                     <Gallery isLikesSection={true}/>
                 </TabPane>
 

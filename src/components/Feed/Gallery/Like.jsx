@@ -21,11 +21,6 @@ export default observer(({ photo, ...props }) => {
         flag ? likes.saveLike(photo) : likes.deleteLike(photo)
     }
 
-    const removeLike = async () => {
-        setClick(false)
-        await _firebase.db(`likes/${user.current.uid}/${photo.id}`).remove()
-    }
-
     return (
         <div className={ (props.isHovered || isLiked) ? ( (props.visible || isClicked || isLiked) ? "fadeIn_" : "fadeOut_") : ("d-none")}>
             {
@@ -37,7 +32,7 @@ export default observer(({ photo, ...props }) => {
                     :
                     <HeartOutlined
                         className={cs("like__default", { anim: isClicked, })}
-                        onAnimationEnd={removeLike}
+                        onAnimationEnd={() =>  setClick(false)}
                         onClick={like}
                     />
             }

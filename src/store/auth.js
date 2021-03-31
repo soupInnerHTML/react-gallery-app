@@ -77,8 +77,8 @@ class Auth {
                 this.isLoggedIn = true
 
                 //subscribe to likes from user by storage id
+                blackList.observer(uid)
                 likes.observer(uid)
-                blackList.set(uid)
 
                 console.log("wellcome")
             } else {

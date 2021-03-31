@@ -3,6 +3,9 @@ import { message, Modal } from "antd";
 import firebase from "../global/firebase";
 import auth from "./auth"
 import { eparse } from "../utils/eparse";
+import likes from "./likes";
+import blackList from "./blackList";
+import feed from "./feed";
 
 class User {
     @observable current = {}
@@ -109,6 +112,28 @@ class User {
                 content: eparse(e),
             })
         }
+    }
+
+    @action.bound async clear(entity) {
+        const niceForm = {
+            likes: "likes",
+            blackLists: "black list",
+        }
+
+        await firebase.db(`${entity}/${this.current.uid}`).remove()
+
+        if (entity === "likes") {
+            // rerender likes
+            // prevention of persist
+            likes.isLoaded = false
+            likes.isLoaded = true
+        }
+
+        if (entity === "blacklist") {
+            //TODO FIX: sync bl on delete & null
+        }
+
+        message.success(`Your ${niceForm[entity]} has been successfully cleared`)
     }
 
     @action.bound async updatePassword({ oldPassword, password, }) {

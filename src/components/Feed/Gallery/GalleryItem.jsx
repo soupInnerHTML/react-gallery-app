@@ -9,7 +9,7 @@ import user from "../../../store/user"
 import auth from "../../../store/auth";
 import download from "downloadjs";
 
-export default observer(({ photo, isLikesSection, }) => {
+export default observer(({ photo, ...props }) => {
 
     const [isCollapsed, setIsCollapsed] = useState(false)
     const [isError, setError] = useState(false)

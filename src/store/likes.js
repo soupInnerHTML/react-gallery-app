@@ -1,7 +1,7 @@
 import { action, makeObservable, observable, runInAction } from "mobx";
 import feed from "./feed";
 import user from "./user";
-import _firebase from "../global/firebase";
+import firebase from "../global/firebase";
 
 class Likes {
 
@@ -12,9 +12,9 @@ class Likes {
         return this._likes
     }
 
-    observer(userId) {
+    @action.bound observer(userId) {
         if (userId) {
-            _firebase.db(`likes/${userId || localStorage.getItem("auth")}`)
+            firebase.db(`likes/${userId}`)
                 .orderByChild("timestamp")
                 .on("value", (snapshot) => {
                     const data = snapshot.val()
@@ -34,15 +34,12 @@ class Likes {
 
         this.isLoaded = true
 
-        feed.photos = feed.photos.map(photo => ({
-            ...photo,
-            liked: !!this._likes.find(x => x.idApi === photo.idApi),
-        }))
+        feed.syncLikes()
     }
 
     @action.bound async saveLike(photo) {
         const { url, bigV, id, idApi, height, } = photo
-        await _firebase.db(`likes/${user.current.uid}/${id}`).set({
+        await firebase.db(`likes/${user.current.uid}/${id}`).set({
             url,
             bigV,
             idApi,
@@ -51,11 +48,9 @@ class Likes {
 
     }
 
-    @action.bound deleteLike(photo) {
+    @action.bound async deleteLike(photo) {
         photo.liked = false
-        //remove like from feed | cache
-        let feedPhoto = (feed.photos.length ? feed.photos : feed.cachedPhotos).find(_photo => _photo.idApi === photo.idApi)
-        feedPhoto && (feedPhoto.liked = false)
+        await firebase.db(`likes/${user.current.uid}/${photo.id}`).remove()
     }
 
     constructor() {

@@ -24,5 +24,4 @@ class Firebase {
         firebase.initializeApp(this.config)
     }
 }
-
 export default new Firebase()

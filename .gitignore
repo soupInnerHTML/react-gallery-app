@@ -4,3 +4,7 @@ dist
 .parcel-cache
 .env
 *.log
+.idea
+.vscode
+
+#TODO delete .idea, .vscode & etc from gh repo on release

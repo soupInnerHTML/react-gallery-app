@@ -1,6 +1,7 @@
 import { action, computed, makeObservable, observable } from "mobx";
 import { sample, uniqueId } from "lodash";
 import getRandInt from "../utils/getRandInt";
+import likes from "./likes";
 
 class Feed {
     @observable photos = []
@@ -12,8 +13,6 @@ class Feed {
     @observable R_SHIFT = 100
     @observable M_SHIFT = 300
     @observable isLikesOnly = false
-    // @observable R_SHIFT = 500
-    // @observable M_SHIFT = 500
 
     @computed get imgWidth() {
         return getRandInt(this.IMG_WIDTH + this.R_SHIFT, this.IMG_WIDTH - this.R_SHIFT)
@@ -45,6 +44,7 @@ class Feed {
     }
 
     @action.bound generateRandomPhotos() {
+
         if (this.cachedPhotos.length) {
             let temp = this.portion
             this.portion += 12
@@ -76,11 +76,23 @@ class Feed {
                 url,
                 timestamp,
                 idApi,
+                liked: !!likes.get().find(like => like.idApi === idApi),
                 fromFeed: true,
                 width: getRandInt(this.IMG_WIDTH + this.R_SHIFT, this.IMG_WIDTH - this.R_SHIFT),
                 height: getRandInt(this.IMG_HEIGHT + this.R_SHIFT, this.IMG_HEIGHT - this.R_SHIFT),
                 bigV: `${base}/${_h + this.M_SHIFT}/${_h + this.M_SHIFT}`,
-                id: timestamp + uniqueId(),  //timestamp +
+                id: timestamp + uniqueId(),
+            }
+        })
+    }
+
+    @action.bound syncLikes() {
+        ["photos", "cachedPhotos"].forEach((entity) => {
+            if (this[entity]?.length) {
+                this[entity] = this[entity].map(photo => ({
+                    ...photo,
+                    liked: !!likes.get().find(x => x.idApi === photo.idApi),
+                }))
             }
         })
     }

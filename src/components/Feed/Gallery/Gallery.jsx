@@ -30,7 +30,7 @@ export default observer(({ isLikesSection, }) => {
                                 _photos.map(photo => (
                                     <GalleryItem
                                         key={photo.id}
-                                        {...{ photo, isLikesSection, }}
+                                        {...{ photo, }}
                                     />
                                 ))
                             }
