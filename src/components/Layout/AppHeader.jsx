@@ -4,7 +4,7 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import auth from "../../store/auth";
-import routes from "../../store/routes";
+import routes from "../../global/routes";
 import CustomAvatar from "../Common/CustomAvatar";
 import CustomBtn from "../Common/CustomBtn";
 import { colorList } from "../../global/styles";

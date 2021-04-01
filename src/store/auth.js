@@ -9,7 +9,6 @@ import likes from "./likes";
 import localUser from "./user";
 import firebase from "../global/firebase";
 import { eparse } from "../utils/eparse";
-import user from "./user";
 
 class Auth {
     @observable isLoggedIn = !!localStorage.getItem("auth")
@@ -56,7 +55,7 @@ class Auth {
         }
     }
 
-    check() {
+    @action.bound check() {
         const getSID = () => localStorage.getItem("auth")
 
         firebase.auth.onAuthStateChanged(_user => {
@@ -92,7 +91,6 @@ class Auth {
         try {
             setFetching(true)
             const user = await this[this.outer ? this.outer + "SignIn" : "sign" + this.signMode[0].toUpperCase() + this.signMode[1]](values)
-            // console.log(user)
             localUser.set(user)
             localStorage.setItem("auth", user.uid)
             setFetching(false)
@@ -128,7 +126,6 @@ class Auth {
             displayName,
             photoURL,
             uid,
-            _password: password,
         }
     }
 
@@ -149,5 +146,3 @@ class Auth {
 }
 
 export default new Auth()
-
-//TODO remove password from store

@@ -14,7 +14,7 @@ class BlackList {
 
     @observable _blackList = []
 
-    @action.bound get() {
+    get() {
         return this._blackList
     }
 
@@ -22,7 +22,7 @@ class BlackList {
         if (userId) {
             firebase.db(`blackLists/${userId}`)
                 .on("value", (snapshot) => {
-                    const data = Object.values(snapshot.val())
+                    const data = Object.values(snapshot.val() || {})
                     this._blackList = data
                 })
         }

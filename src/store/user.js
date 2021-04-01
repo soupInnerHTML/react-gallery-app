@@ -1,11 +1,9 @@
 import { action, makeObservable, observable } from "mobx";
 import { message, Modal } from "antd";
+import { eparse } from "../utils/eparse";
 import firebase from "../global/firebase";
 import auth from "./auth"
-import { eparse } from "../utils/eparse";
 import likes from "./likes";
-import blackList from "./blackList";
-import feed from "./feed";
 
 class User {
     @observable current = {}
@@ -25,14 +23,13 @@ class User {
         const { displayName, email, photoURL, } = body
         const { set, } = this
         let matchesCounter = 0
-        console.log(this.current._password)
 
         if (photoURL) {
             await currentUser.updateProfile({ photoURL, })
             return this.set(currentUser)
         }
 
-        if (displayName !== this.current.displayName) {
+        if (displayName !== this.current.displayName && displayName) {
             await currentUser.updateProfile({ displayName, })
             set({ displayName, })
         }
@@ -40,12 +37,7 @@ class User {
             matchesCounter++
         }
 
-        if (email !== this.current.email) {
-            // let credential = firebase._auth.EmailAuthProvider.credential(
-            //     this.current.email,
-            //     this.current._password
-            // )
-            // await currentUser.reauthenticateWithCredential(credential)
+        if (email !== this.current.email && email) {
             try {
                 await currentUser.updateEmail(email)
                 this.set({ email, })
@@ -60,34 +52,23 @@ class User {
         }
 
         if (matchesCounter >= 2) {
-            // return Modal.warning({
-            //     title: "Oh...",
-            //     content: "The profile data the same",
-            // })
-
-            // TODO what exactly?
-
+            // do nothing if data the same
             return
         }
 
 
         if (isCustomHandler) {
+            // do nothing if custom handler
             return
         }
 
-        if (_message) {
-            return message.success(_message)
-        }
+        message.success(_message || "The profile info has been successfully updated")
 
-        // Modal.success({
-        //     title: "It's alright",
-        //     content: "The profile info has been successfully updated",
-        // })
-
-        message.success("The profile info has been successfully updated")
+        console.log(this.current)
     }
 
     @action.bound async changeEmailWithReauth(password) {
+        //TODO MAYBE: confirm user email
         try {
             if (this.emailToChange) {
                 const { currentUser, } = firebase.auth
@@ -96,14 +77,9 @@ class User {
                     password
                 )
                 await currentUser.reauthenticateWithCredential(credential)
-                await currentUser.updateEmail(this.emailToChange)
+                await this.editProfileInfo({ email: this.emailToChange, })
                 this.emailToChange = ""
                 auth.isRe = false
-                // Modal.success({
-                //     title: "It's alright",
-                //     content: "The profile info has been successfully updated",
-                // })
-                this.editProfileInfo({ email: this.emailToChange, })
             }
         }
         catch (e) {
@@ -129,15 +105,10 @@ class User {
             likes.isLoaded = true
         }
 
-        if (entity === "blacklist") {
-            //TODO FIX: sync bl on delete & null
-        }
-
         message.success(`Your ${niceForm[entity]} has been successfully cleared`)
     }
 
     @action.bound async updatePassword({ oldPassword, password, }) {
-        // TODO fix: error w/ auth w/ wrong password
         const { currentUser, } = firebase.auth
         let credential = firebase._auth.EmailAuthProvider.credential(
             this.current.email,
@@ -161,10 +132,7 @@ class User {
         }
 
         await firebase.auth.currentUser.updatePassword(password)
-        // return Modal.success({
-        //     title: "Yeah, right",
-        //     content: "The password has been successfully updated",
-        // })
+
         message.success("The password has been successfully updated")
 
     }

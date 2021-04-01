@@ -12,7 +12,6 @@ const RegenerateBtn = () => {
     const [isRegeneratingPhotos, setRegeneratingPhotos] = React.useState(false)
 
     React.useEffect(() => {
-        // console.log(feed.backTop)
         function shift() {
             setReplaced(window.pageYOffset >= 400)
         }

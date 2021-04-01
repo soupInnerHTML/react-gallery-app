@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { Route, Switch, Redirect, useLocation } from "react-router-dom"
 import { observer } from "mobx-react-lite";
-import routes from "../store/routes"
+import routes from "../global/routes"
 import Feed from "./Feed/Feed";
 import Profile from "./Profile/Profile";
 import auth from "../store/auth";

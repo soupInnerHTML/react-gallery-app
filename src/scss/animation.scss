@@ -164,15 +164,6 @@ $t: 1.3s;
 	@include withAnim(backInUpLonger, $t);
 }
 
-@keyframes slide {
-	0% {
-		height: 0;
-	}
-	to {
-		height: 41px;
-	}
-}
-
 @keyframes collapse {
 	to {
 		height: 0;

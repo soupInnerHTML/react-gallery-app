@@ -3,7 +3,7 @@ import { UserOutlined, HomeOutlined } from "@ant-design/icons";
 import { PageHeader, Space, Tabs, Divider, Typography, Breadcrumb, Skeleton } from "antd";
 import { useHistory } from "react-router-dom";
 import { observer } from "mobx-react-lite"
-import routes from "../../store/routes";
+import routes from "../../global/routes";
 import user from "../../store/user";
 import CustomAvatar from "../Common/CustomAvatar";
 import Gallery from "../Feed/Gallery/Gallery";

@@ -56,14 +56,14 @@ class Feed {
         }
 
         return Array.from({ length: 12, }, x => {
-            let idApi
+            let idApi = 40
 
-            if (this.ids.length) {
-                idApi = sample(this.ids)
-            }
-            else {
-                idApi = getRandInt(500)
-            }
+            // if (this.ids.length) {
+            //     idApi = sample(this.ids)
+            // }
+            // else {
+            //     idApi = getRandInt(500)
+            // }
 
             const base = "https://picsum.photos/id/" + idApi
             const _w = this.imgWidth
