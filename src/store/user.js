@@ -21,7 +21,6 @@ class User {
     @action.bound async editProfileInfo(body, _message, isCustomHandler) {
         const { currentUser, } = firebase.auth
         const { displayName, email, photoURL, } = body
-        const { set, } = this
         let matchesCounter = 0
 
         if (photoURL) {
@@ -31,7 +30,7 @@ class User {
 
         if (displayName !== this.current.displayName && displayName) {
             await currentUser.updateProfile({ displayName, })
-            set({ displayName, })
+            this.set({ displayName, })
         }
         else {
             matchesCounter++
@@ -41,6 +40,8 @@ class User {
             try {
                 await currentUser.updateEmail(email)
                 this.set({ email, })
+                this.verifyEmail().then()
+                this.current.emailVerified = false
             }
             catch (e) {
                 this.emailToChange = email
@@ -51,24 +52,15 @@ class User {
             matchesCounter++
         }
 
-        if (matchesCounter >= 2) {
-            // do nothing if data the same
-            return
-        }
-
-
-        if (isCustomHandler) {
-            // do nothing if custom handler
+        if (matchesCounter >= 2 || isCustomHandler) {
+            // stop if data the same or its custom handler
             return
         }
 
         message.success(_message || "The profile info has been successfully updated")
-
-        console.log(this.current)
     }
 
     @action.bound async changeEmailWithReauth(password) {
-        //TODO MAYBE: confirm user email
         try {
             if (this.emailToChange) {
                 const { currentUser, } = firebase.auth
@@ -136,6 +128,12 @@ class User {
         message.success("The password has been successfully updated")
 
     }
+
+    async verifyEmail() {
+        const { currentUser, } = firebase.auth
+        await currentUser.sendEmailVerification()
+    }
+
     constructor() {
         makeObservable(this)
     }

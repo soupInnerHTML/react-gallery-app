@@ -38,7 +38,6 @@ class Likes {
     }
 
     @action.bound async saveLike(photo) {
-        //TODO RESOLVE: likes on the same idApi
         const { url, bigV, id, idApi, height, } = photo
         await firebase.db(`likes/${user.current.uid}/${id}`).set({
             url,

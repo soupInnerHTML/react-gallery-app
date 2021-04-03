@@ -43,7 +43,7 @@ class Auth {
         localStorage.removeItem("auth")
         this.isLoggedOut = true
         this.isLoggedIn = false
-        user.current = []
+        localUser.current = []
         localUser.set(null)
 
         //remove likes after logout
@@ -60,13 +60,14 @@ class Auth {
 
         firebase.auth.onAuthStateChanged(_user => {
             if (_user) {
-                const { displayName, email, photoURL, uid, providerData, } = _user
+                console.log(_user)
+                const { displayName, email, photoURL, uid, providerData, emailVerified, } = _user
                 if (this.isLoggedIn && uid !== getSID()) {
                     console.log("exit", "sid: " + getSID(), "uid: " + uid)
                     return this.logout()
                 }
                 localUser.set({
-                    displayName, email, photoURL, uid,
+                    displayName, email, photoURL, uid, emailVerified,
                     outer: providerData[0].providerId !== "password",
                     // google.com & etc -> true
                     // by password -> false
@@ -115,17 +116,21 @@ class Auth {
             photoURL: sample(colorList),
         })
 
+        localUser.verifyEmail().then()
+
         return await this.signIn(body)
     }
 
+
     async signIn({ email, password, }) {
         const userCredential = await firebase.auth.signInWithEmailAndPassword(email, password)
-        const { displayName, photoURL, uid, } = userCredential.user
+        const { displayName, photoURL, uid, emailVerified, } = userCredential.user
         return {
             email,
             displayName,
             photoURL,
             uid,
+            emailVerified,
         }
     }
 

@@ -1,5 +1,5 @@
 import { UserOutlined } from "@ant-design/icons";
-import { Avatar, Layout, Menu, Row, Skeleton, Space } from "antd";
+import { Avatar, Badge, Layout, Menu, Row, Skeleton, Space } from "antd";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -8,6 +8,8 @@ import routes from "../../global/routes";
 import CustomAvatar from "../Common/CustomAvatar";
 import CustomBtn from "../Common/CustomBtn";
 import { colorList } from "../../global/styles";
+import user from "../../store/user";
+import isEmpty from "lodash/isEmpty";
 
 const AppHeader = () => {
 
@@ -28,7 +30,9 @@ const AppHeader = () => {
 
                 <Space align={"center"} size={"large"} className={"fadeIn"}>
                     {auth.isLoggedIn ? pathname !== routes.profile && <Link to={routes.profile}>
-                        <CustomAvatar isAvatarEditVisible={false} />
+                        <Badge dot={!isEmpty(user.current) && !user.current.emailVerified}>
+                            <CustomAvatar isAvatarEditVisible={false} />
+                        </Badge>
                     </Link> : auth.isModalVisible ? <></> : <>
                         <CustomBtn onClick={() => openModalWithMode("up")}>
                             Sign up

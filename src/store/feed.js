@@ -1,5 +1,5 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import { sample, uniqueId } from "lodash";
+import { sample, uniqBy, uniqueId } from "lodash";
 import getRandInt from "../utils/getRandInt";
 import likes from "./likes";
 
@@ -22,7 +22,7 @@ class Feed {
     }
 
     @action.bound addPhotos(newPhotos = this.generateRandomPhotos()) {
-        this.photos.push(...newPhotos)
+        this.photos = uniqBy([...this.photos, ...newPhotos], "idApi")
     }
     @action.bound lazyLoad() {
         const windowHeight = window.innerHeight
@@ -56,14 +56,14 @@ class Feed {
         }
 
         return Array.from({ length: 12, }, x => {
-            let idApi = 40
+            let idApi
 
-            // if (this.ids.length) {
-            //     idApi = sample(this.ids)
-            // }
-            // else {
-            //     idApi = getRandInt(500)
-            // }
+            if (this.ids.length) {
+                idApi = sample(this.ids)
+            }
+            else {
+                idApi = getRandInt(500)
+            }
 
             const base = "https://picsum.photos/id/" + idApi
             const _w = this.imgWidth

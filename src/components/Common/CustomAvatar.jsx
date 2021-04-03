@@ -7,7 +7,7 @@ import { EditOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Button, message, Skeleton } from "antd";
 import firebase from "../../global/firebase";
 
-const CustomAvatar = ({ size, currentTab, isAvatarEditVisible, }) => {
+const CustomAvatar = ({ size, currentTab, isAvatarEditVisible, ...props }) => {
 
     const { photoURL, } = user.current || {}
     const [isFileLoading, setFileLoading] = React.useState(false)
