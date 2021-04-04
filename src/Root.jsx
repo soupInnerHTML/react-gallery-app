@@ -22,3 +22,5 @@ export default () => {
         </BrowserRouter>
     )
 }
+
+//TODO FEAT: fullscreen mode

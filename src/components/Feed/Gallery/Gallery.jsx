@@ -6,6 +6,7 @@ import likes from "../../../store/likes";
 import GalleryItem from "./GalleryItem";
 import RegenerateBtn from "./RegenerateBtn";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import FullscreenModeBtn from "./FullscreenModeBtn";
 
 export default observer(({ isLikesSection, }) => {
 
@@ -21,6 +22,7 @@ export default observer(({ isLikesSection, }) => {
         return (
             <div className="wrapper-gallery">
                 {!isLikesSection && <RegenerateBtn/>}
+                <FullscreenModeBtn/>
                 <Image.PreviewGroup>
                     <ResponsiveMasonry
                         columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3, 1200: 4, }}

@@ -10,6 +10,7 @@ import CustomBtn from "../Common/CustomBtn";
 import { colorList } from "../../global/styles";
 import user from "../../store/user";
 import isEmpty from "lodash/isEmpty";
+import feed from "../../store/feed";
 
 const AppHeader = () => {
 
@@ -21,34 +22,43 @@ const AppHeader = () => {
         auth.openModal()
     }
 
-    return (
-        <Layout.Header className="header">
-            <Row className="container header-inner">
-                <Menu theme="dark" mode="horizontal" selectable={false} >
-                    {pathname !== routes.feed && <Menu.Item key="3"><Link to={routes.feed}>Feed</Link></Menu.Item>}
-                </Menu>
+    if (!feed.isFullScreenMode) {
+        return (
+            <Layout.Header className="header">
+                <Row className="container header-inner">
+                    <Menu theme="dark" mode="horizontal" selectable={false} >
+                        {pathname !== routes.feed && <Menu.Item key="3"><Link to={routes.feed}>Feed</Link></Menu.Item>}
+                    </Menu>
 
-                <Space align={"center"} size={"large"} className={"fadeIn"}>
-                    {auth.isLoggedIn ? pathname !== routes.profile && <Link to={routes.profile}>
-                        <Badge dot={!isEmpty(user.current) && !user.current.emailVerified && !user.current.isAnonymous}>
-                            <CustomAvatar isAvatarEditVisible={false} />
-                        </Badge>
-                    </Link> : auth.isModalVisible ? <></> : <>
-                        <CustomBtn onClick={() => openModalWithMode("up")}>
-                            Sign up
-                        </CustomBtn>
+                    <Space align={"center"} size={"large"} className={"fadeIn"}>
+                        {auth.isLoggedIn ? pathname !== routes.profile && <Link to={routes.profile}>
+                            <Badge dot={!isEmpty(user.current) && !user.current.emailVerified && !user.current.isAnonymous}>
+                                <CustomAvatar isAvatarEditVisible={false} />
+                            </Badge>
+                        </Link> : auth.isModalVisible ? <></> : <>
+                            <CustomBtn onClick={() => openModalWithMode("up")}>
+                                Sign up
+                            </CustomBtn>
 
-                        <CustomBtn type={"primary"} onClick={() => openModalWithMode("in")}>
-                            Sign in
-                        </CustomBtn>
-                    </>}
+                            <CustomBtn type={"primary"} onClick={() => openModalWithMode("in")}>
+                                Sign in
+                            </CustomBtn>
+                        </>}
 
 
-                </Space>
-            </Row>
+                    </Space>
+                </Row>
 
-        </Layout.Header>
-    );
+            </Layout.Header>
+        );
+    }
+
+    else {
+        return (
+            //компенсировать отступ при отсутсвии header
+            <div style={{ marginTop: -64, }}/>
+        )
+    }
 };
 
 

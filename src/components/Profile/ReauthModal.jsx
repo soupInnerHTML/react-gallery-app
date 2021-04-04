@@ -6,7 +6,7 @@ import { sign } from "../../global/inputData"
 import { input } from "../../global/styles"
 import auth from "../../store/auth"
 import user from "../../store/user"
-import AuthModal from "../Common/AuthModal"
+import AuthModal from "../Auth/AuthModal"
 import CustomBtn from "../Common/CustomBtn"
 
 function ReauthModal() {
@@ -26,8 +26,8 @@ function ReauthModal() {
                 <Row gutter={10} justify={"center"} wrap={true} align={"bottom"} style={{ margin: 33, }}>
                     <Col span={13}>
                         <Form.Item name="password" rules={sign.up.fields[2].rules} style={{ margin: 0, }}>
-                            <Input.Password 
-                                {...input} 
+                            <Input.Password
+                                {...input}
                                 placeholder={sign.up.fields[2].placeholder}
                             />
                         </Form.Item>

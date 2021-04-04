@@ -1,14 +1,14 @@
 import { Modal } from "antd";
-import { sample } from "lodash";
 import { action, computed, makeObservable, observable } from "mobx";
 import { sign } from "../global/inputData";
 import { anonImg, colorList } from "../global/styles";
+import { eparse } from "../utils/eparse";
+import sample from "lodash/sample";
 import blackList from "./blackList";
 import feed from "./feed";
 import likes from "./likes";
 import localUser from "./user";
 import firebase from "../global/firebase";
-import { eparse } from "../utils/eparse";
 
 class Auth {
     @observable isLoggedIn = !!this.getSID()

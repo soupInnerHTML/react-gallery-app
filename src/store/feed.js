@@ -1,5 +1,7 @@
 import { action, computed, makeObservable, observable } from "mobx";
-import { sample, uniqBy, uniqueId } from "lodash";
+import sample from "lodash/sample"
+import uniqBy from "lodash/uniqBy"
+import uniqueId from "lodash/uniqueId"
 import getRandInt from "../utils/getRandInt";
 import likes from "./likes";
 
@@ -13,6 +15,7 @@ class Feed {
     @observable R_SHIFT = 100
     @observable M_SHIFT = 300
     @observable isLikesOnly = false
+    @observable isFullScreenMode = false
 
     @computed get imgWidth() {
         return getRandInt(this.IMG_WIDTH + this.R_SHIFT, this.IMG_WIDTH - this.R_SHIFT)

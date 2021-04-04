@@ -5,6 +5,7 @@ import routes from "../global/routes"
 import Feed from "./Feed/Feed";
 import Profile from "./Profile/Profile";
 import auth from "../store/auth";
+import scrollTo from "../utils/scrollTo";
 
 export default observer(() => {
     const { pathname, } = useLocation()
@@ -14,6 +15,10 @@ export default observer(() => {
             auth.openModal()
         }
     }, [auth.isLoggedIn, auth.isLoggedOut])
+
+    useEffect(() => {
+        scrollTo(0, 0)
+    }, [pathname])
 
     return (
         <Switch>

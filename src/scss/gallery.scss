@@ -62,16 +62,25 @@
 }
 
 .gallery {
-	&__regenerate {
+	&__controlBtn {
 		position: fixed !important;
 		bottom: 50px;
 		right: 90px;
 		width: 50px !important;
 		height: 50px !important;
 		z-index: 20;
-		transition: bottom 1s;
+		box-shadow: 1px 1px 40px #000 !important;
+	}
+	&__regenerate {
 		&.replaced {
 			bottom: 100px;
+		}
+	}
+	&__fullscreen {
+		right: 160px;
+		&.replaced {
+			right: 147px;
+			bottom: 67px;
 		}
 	}
 	&__empty {

@@ -2,12 +2,12 @@ import { runInAction } from "mobx";
 import React, { useState } from "react";
 import { Col, Form, Input, Row, Typography } from "antd";
 import { observer } from "mobx-react-lite";
-import { uniqueId } from "lodash";
 import { CustomGoogleIcon } from "../Common/CustomGoogleIcon";
 import { anonImg, authBtnsIcons, input } from "../../global/styles";
 import CustomBtn from "../Common/CustomBtn";
 import auth from "../../store/auth";
-import AuthModal from "../Common/AuthModal";
+import AuthModal from "./AuthModal";
+import uniqueId from "lodash/uniqueId";
 
 export default observer(() => {
     const { formTemplate, changeSignMode, } = auth
