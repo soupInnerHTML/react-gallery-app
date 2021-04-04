@@ -19,13 +19,13 @@ const Profile = () => {
 
     const { TabPane, } = Tabs
     const { Title, Text, Link, } = Typography
-    const { displayName, email, outer, } = user.current || {}
+    const { displayName, email, outer, isAnonymous, emailVerified, } = user.current || {}
 
     const animSwitch = currentTab == 2 && activePanel.includes("1") ? "backOutDown" : "backInUp"
     const maxAnimSwitch = typeof currentTab == "string" && !outer ? animSwitch : ""
 
     const isEmailVerified = (onTab) => {
-        return isEmpty(user.current) ? true : (currentTab == onTab ? user.current.emailVerified : true)
+        return isEmpty(user.current) || isAnonymous ? true : (currentTab == onTab ? emailVerified : true)
     }
 
 
@@ -59,6 +59,7 @@ const Profile = () => {
                     <CustomAvatar size={120} {...{ currentTab, isAvatarEditVisible, }}/>
                 </Badge>
 
+                {!isAnonymous &&
                 <Title className={maxAnimSwitch}>
                     {displayName ||
                     <div className="username__placeholder">
@@ -69,8 +70,9 @@ const Profile = () => {
                         />
                     </div>}
 
-                </Title>
-                <Popover placement="right" content={(
+                </Title>}
+
+                {!isAnonymous && <Popover placement="right" content={(
                     <>
                         <p>Please, verify your email</p>
                         <Link onClick={user.verifyEmail}>Resend mail</Link>
@@ -91,7 +93,7 @@ const Profile = () => {
                             </div>}
                         </Text>
                     </Badge>
-                </Popover>
+                </Popover>}
             </Space>
 
             <Divider />

@@ -46,7 +46,7 @@ const CustomAvatar = ({ size, currentTab, isAvatarEditVisible, ...props }) => {
                 {...{ size, }}
             />
 
-            <Skeleton avatar active className={"avatar__placeholder" + (size ? size : "")}/>
+            {!photoURL && <Skeleton avatar active className={"avatar__placeholder" + (size ? size : "")}/>}
         </div>
     )
 }

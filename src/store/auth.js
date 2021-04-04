@@ -2,7 +2,7 @@ import { Modal } from "antd";
 import { sample } from "lodash";
 import { action, computed, makeObservable, observable } from "mobx";
 import { sign } from "../global/inputData";
-import { colorList } from "../global/styles";
+import { anonImg, colorList } from "../global/styles";
 import blackList from "./blackList";
 import feed from "./feed";
 import likes from "./likes";
@@ -11,7 +11,7 @@ import firebase from "../global/firebase";
 import { eparse } from "../utils/eparse";
 
 class Auth {
-    @observable isLoggedIn = !!localStorage.getItem("auth")
+    @observable isLoggedIn = !!this.getSID()
     @observable isLoggedOut = false
     @observable isModalVisible = false
     @observable isRe = false
@@ -55,20 +55,24 @@ class Auth {
         }
     }
 
+    getSID() {
+        return localStorage.getItem("auth")
+    }
+
     @action.bound check() {
-        const getSID = () => localStorage.getItem("auth")
 
         firebase.auth.onAuthStateChanged(_user => {
             if (_user) {
                 console.log(_user)
-                const { displayName, email, photoURL, uid, providerData, emailVerified, } = _user
-                if (this.isLoggedIn && uid !== getSID()) {
-                    console.log("exit", "sid: " + getSID(), "uid: " + uid)
+                const { displayName, email, photoURL, uid, providerData, emailVerified, isAnonymous, } = _user
+                if (this.isLoggedIn && uid !== this.getSID()) {
+                    console.log("exit", "sid: " + this.getSID(), "uid: " + uid)
                     return this.logout()
                 }
                 localUser.set({
-                    displayName, email, photoURL, uid, emailVerified,
-                    outer: providerData[0].providerId !== "password",
+                    displayName, email, photoURL, uid,
+                    emailVerified, isAnonymous,
+                    outer: providerData[0]?.providerId !== "password",
                     // google.com & etc -> true
                     // by password -> false
                 })
@@ -76,11 +80,11 @@ class Auth {
                 localStorage.setItem("auth", uid)
                 this.isLoggedIn = true
 
-                //subscribe to likes from user by storage id
-                blackList.observer(uid)
-                likes.observer(uid)
+                //subscribe to updates from db
+                blackList.observe()
+                likes.observe()
 
-                console.log("wellcome")
+                console.log("welcome")
             } else {
                 console.log("No user is signed in")
             }
@@ -109,8 +113,7 @@ class Auth {
 
     async signUp(body) {
         const { email, password, } = body
-        const userCredential = await firebase.auth.createUserWithEmailAndPassword(email, password)
-        const { user, } = userCredential
+        const { user, } = await firebase.auth.createUserWithEmailAndPassword(email, password)
         await user.updateProfile({
             displayName: body["user name"],
             photoURL: sample(colorList),
@@ -123,8 +126,8 @@ class Auth {
 
 
     async signIn({ email, password, }) {
-        const userCredential = await firebase.auth.signInWithEmailAndPassword(email, password)
-        const { displayName, photoURL, uid, emailVerified, } = userCredential.user
+        const { user, } = await firebase.auth.signInWithEmailAndPassword(email, password)
+        const { displayName, photoURL, uid, emailVerified, } = user
         return {
             email,
             displayName,
@@ -141,6 +144,19 @@ class Auth {
         return {
             displayName, photoURL, uid, email,
             outer: providerData[0].providerId,
+        }
+    }
+
+    anonSignIn = async () => {
+        const { user, } = await firebase.auth.signInAnonymously()
+        await user.updateProfile({
+            photoURL: anonImg,
+        })
+
+        const { displayName, photoURL, uid, }  = user
+
+        return {
+            displayName, photoURL, uid,
         }
     }
 

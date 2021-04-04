@@ -1,5 +1,5 @@
 import { message } from "antd";
-import { action, makeObservable, runInAction, observable, configure } from "mobx";
+import { action, makeObservable, observable, configure } from "mobx";
 import auth from "./auth";
 import feed from "./feed";
 import likes from "./likes";
@@ -18,9 +18,11 @@ class BlackList {
         return this._blackList
     }
 
-    @action.bound observer(userId) {
-        if (userId) {
-            firebase.db(`blackLists/${userId}`)
+    @action.bound observe() {
+        const { uid, } = user.common || { uid: auth.getSID(), }
+
+        if (uid) {
+            firebase.db(`blackLists/${uid}`)
                 .on("value", (snapshot) => {
                     const data = Object.values(snapshot.val() || {})
                     this._blackList = data

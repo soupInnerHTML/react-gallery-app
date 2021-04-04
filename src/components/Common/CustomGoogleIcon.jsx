@@ -1,8 +1,9 @@
 import React from "react"
+import { authBtnsIcons } from "../../global/styles";
 
 export const CustomGoogleIcon = () => {
     return (
-        <svg height="20" viewBox="0 0 512 512" width="20" xmlns="http://www.w3.org/2000/svg" style={{ verticalAlign: "sub", margin: "0 5px 0 0", }}>
+        <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" style={authBtnsIcons}>
             <g fill="none" fillRule="evenodd">
                 <path d="M482.56 261.36c0-16.73-1.5-32.83-4.29-48.27H256v91.29h127.01c-5.47 29.5-22.1 54.49-47.09 71.23v59.21h76.27c44.63-41.09 70.37-101.59 70.37-173.46z" fill="#4285f4"/>
                 <path d="M256 492c63.72 0 117.14-21.13 156.19-57.18l-76.27-59.21c-21.13 14.16-48.17 22.53-79.92 22.53-61.47 0-113.49-41.51-132.05-97.3H45.1v61.15c38.83 77.13 118.64 130.01 210.9 130.01z" fill="#34a853"/>

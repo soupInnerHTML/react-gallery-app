@@ -30,7 +30,7 @@ const AppHeader = () => {
 
                 <Space align={"center"} size={"large"} className={"fadeIn"}>
                     {auth.isLoggedIn ? pathname !== routes.profile && <Link to={routes.profile}>
-                        <Badge dot={!isEmpty(user.current) && !user.current.emailVerified}>
+                        <Badge dot={!isEmpty(user.current) && !user.current.emailVerified && !user.current.isAnonymous}>
                             <CustomAvatar isAvatarEditVisible={false} />
                         </Badge>
                     </Link> : auth.isModalVisible ? <></> : <>
