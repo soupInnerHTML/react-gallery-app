@@ -4,6 +4,7 @@ import uniqBy from "lodash/uniqBy"
 import uniqueId from "lodash/uniqueId"
 import getRandInt from "../utils/getRandInt";
 import likes from "./likes";
+import { Modal } from "antd";
 
 class Feed {
     @observable photos = []
@@ -39,10 +40,15 @@ class Feed {
     }
 
     @action.bound async getList(from = 1, to = 10) {
-        for (from; from <= to; from++) {
-            const response = await fetch(`https://picsum.photos/v2/list?page=${from}&limit=100`)
-            const data = await response.json()
-            this.ids.push(...data.map(photo => photo.id))
+        try {
+            for (from; from <= to; from++) {
+                const response = await fetch(`https://picsum.photos/v2/list?page=${from}&limit=100`)
+                const data = await response.json()
+                this.ids.push(...data.map(photo => photo.id))
+            }
+        }
+        catch (e) {
+            Modal.error({ title: "Failed to fetch content", content: "Please try to use VPN!", })
         }
     }
 
